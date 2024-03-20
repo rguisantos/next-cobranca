@@ -14,7 +14,7 @@ export async function POST(
     const { nome, cpf, rg, telefone, endereco, cidade, estado } = body;
 
     if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 403 });
+      return new NextResponse("Não autenticado", { status: 403 });
     }
 
     if (!nome) {
@@ -40,7 +40,7 @@ export async function POST(
     return NextResponse.json(cliente);
   } catch (error) {
     console.log('[CLIENTES_POST]', error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
 
@@ -53,6 +53,6 @@ export async function GET(
     return NextResponse.json(clientes);
   } catch (error) {
     console.log('[CLIENTES_GET]', error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };

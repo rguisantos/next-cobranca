@@ -21,7 +21,7 @@ export async function GET(
     return NextResponse.json(cliente);
   } catch (error) {
     console.log('[CLIENTE_GET]', error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
 
@@ -49,7 +49,7 @@ export async function DELETE(
     return NextResponse.json(cliente);
   } catch (error) {
     console.log('[CLIENTE_DELETE]', error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
 
@@ -91,6 +91,6 @@ export async function PATCH(
     return NextResponse.json(cliente);
   } catch (error) {
     console.log('[CLIENTE_PATCH]', error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };

@@ -5,29 +5,32 @@ import prismadb from "@/lib/prismadb";
 
 export async function GET(
   req: Request,
-  { params }: { params: { tipoProdutoId: string } }
+  { params }: { params: { usuarioId: string } }
 ) {
   try {
-    if (!params.tipoProdutoId) {
-      return new NextResponse("TipoProdutoId é obrigatório", { status: 400 });
+    if (!params.usuarioId) {
+      return new NextResponse("UsuarioId é obrigatório", { status: 400 });
     }
 
-    const tipoProduto = await prismadb.tipoProduto.findUnique({
+    const usuario = await prismadb.usuario.findUnique({
       where: {
-        id: params.tipoProdutoId
+        id: params.usuarioId
+      },
+      include:{
+        acessosNaRota:true
       }
     });
   
-    return NextResponse.json(tipoProduto);
+    return NextResponse.json({ nome: usuario?.nome, acessosNaRota: usuario?.acessosNaRota });
   } catch (error) {
-    console.log('[TIPOPRODUTO_GET]', error);
+    console.log('[USUARIO_GET]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { tipoProdutoId: string } }
+  { params }: { params: { usuarioId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -36,19 +39,19 @@ export async function DELETE(
       return new NextResponse("Não autenticado", { status: 403 });
     }
 
-    if (!params.tipoProdutoId) {
-      return new NextResponse("TipoProdutoId é obrigatório", { status: 400 });
+    if (!params.usuarioId) {
+      return new NextResponse("UsuarioId é obrigatório", { status: 400 });
     }
 
-    const tipoProduto = await prismadb.tipoProduto.delete({
+    const usuario = await prismadb.usuario.delete({
       where: {
-        id: params.tipoProdutoId,
+        id: params.usuarioId,
       }
     });
   
-    return NextResponse.json(tipoProduto);
+    return NextResponse.json(usuario);
   } catch (error) {
-    console.log('[TIPOPRODUTO_DELETE]', error);
+    console.log('[USUARIO_DELETE]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
@@ -56,7 +59,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { tipoProdutoId: string } }
+  { params }: { params: { usuarioId: string } }
 ) {
   try {   
     const { userId } = auth();
@@ -73,20 +76,20 @@ export async function PATCH(
       return new NextResponse("Nome é obrigatório", { status: 400 });
     }
 
-    if (!params.tipoProdutoId) {
-      return new NextResponse("TipoProdutoId é obrigatório", { status: 400 });
+    if (!params.usuarioId) {
+      return new NextResponse("UsuarioId é obrigatório", { status: 400 });
     }
 
-    const tipoProduto = await prismadb.tipoProduto.update({
+    const usuario = await prismadb.usuario.update({
       where: {
-        id: params.tipoProdutoId,
+        id: params.usuarioId,
       },
       data: { nome }
     });
   
-    return NextResponse.json(tipoProduto);
+    return NextResponse.json(usuario);
   } catch (error) {
-    console.log('[TIPOPRODUTO_PATCH]', error);
+    console.log('[USUARIO_PATCH]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };

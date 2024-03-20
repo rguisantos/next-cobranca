@@ -13,7 +13,7 @@ const DashboardPage: React.FC = async () => {
         <Separator />
         <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Agenda</CardTitle>
+            <CardTitle>Visão Geral</CardTitle>
           </CardHeader>
           <CardContent className="pl-2">
           </CardContent>

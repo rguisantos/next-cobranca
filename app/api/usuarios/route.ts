@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs';
 
 import prismadb from '@/lib/prismadb';
+import { encryptPassword } from '@/lib/utils';
  
 export async function POST(
   req: Request
@@ -21,15 +22,17 @@ export async function POST(
       return new NextResponse("Nome é obrigatório", { status: 400 });
     }
 
-    const tipoProduto = await prismadb.tipoProduto.create({
+
+    const usuario = await prismadb.usuario.create({
       data: {
-        nome
+        nome,
+        senha:encryptPassword(process.env.SENHA_PADRAO!, process.env.SECRET_KEY_CRYPT! )
       }
     });
   
-    return NextResponse.json(tipoProduto);
+    return NextResponse.json(usuario);
   } catch (error) {
-    console.log('[TIPOPRODUTOS_POST]', error);
+    console.log('[USUARIOS_POST]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
@@ -38,11 +41,15 @@ export async function GET(
   req: Request
 ) {
   try {
-    const tipoProdutos = await prismadb.tipoProduto.findMany();
+    const usuarios = await prismadb.usuario.findMany({
+      include:{
+        acessosNaRota:true
+      }
+    });
   
-    return NextResponse.json(tipoProdutos);
+    return NextResponse.json(usuarios.map(usuario => { usuario.nome, usuario.acessosNaRota }));
   } catch (error) {
-    console.log('[TIPOPRODUTOS_GET]', error);
+    console.log('[USUARIOS_GET]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };

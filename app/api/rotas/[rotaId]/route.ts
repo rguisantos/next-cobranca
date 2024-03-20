@@ -5,29 +5,29 @@ import prismadb from "@/lib/prismadb";
 
 export async function GET(
   req: Request,
-  { params }: { params: { tipoProdutoId: string } }
+  { params }: { params: { rotaId: string } }
 ) {
   try {
-    if (!params.tipoProdutoId) {
-      return new NextResponse("TipoProdutoId é obrigatório", { status: 400 });
+    if (!params.rotaId) {
+      return new NextResponse("RotaId é obrigatório", { status: 400 });
     }
 
-    const tipoProduto = await prismadb.tipoProduto.findUnique({
+    const rota = await prismadb.rota.findUnique({
       where: {
-        id: params.tipoProdutoId
+        id: params.rotaId
       }
     });
   
-    return NextResponse.json(tipoProduto);
+    return NextResponse.json(rota);
   } catch (error) {
-    console.log('[TIPOPRODUTO_GET]', error);
+    console.log('[ROTA_GET]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { tipoProdutoId: string } }
+  { params }: { params: { rotaId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -36,19 +36,19 @@ export async function DELETE(
       return new NextResponse("Não autenticado", { status: 403 });
     }
 
-    if (!params.tipoProdutoId) {
-      return new NextResponse("TipoProdutoId é obrigatório", { status: 400 });
+    if (!params.rotaId) {
+      return new NextResponse("RotaId é obrigatório", { status: 400 });
     }
 
-    const tipoProduto = await prismadb.tipoProduto.delete({
+    const rota = await prismadb.rota.delete({
       where: {
-        id: params.tipoProdutoId,
+        id: params.rotaId,
       }
     });
   
-    return NextResponse.json(tipoProduto);
+    return NextResponse.json(rota);
   } catch (error) {
-    console.log('[TIPOPRODUTO_DELETE]', error);
+    console.log('[ROTA_DELETE]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
@@ -56,7 +56,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { tipoProdutoId: string } }
+  { params }: { params: { rotaId: string } }
 ) {
   try {   
     const { userId } = auth();
@@ -73,20 +73,20 @@ export async function PATCH(
       return new NextResponse("Nome é obrigatório", { status: 400 });
     }
 
-    if (!params.tipoProdutoId) {
-      return new NextResponse("TipoProdutoId é obrigatório", { status: 400 });
+    if (!params.rotaId) {
+      return new NextResponse("RotaId é obrigatório", { status: 400 });
     }
 
-    const tipoProduto = await prismadb.tipoProduto.update({
+    const rota = await prismadb.rota.update({
       where: {
-        id: params.tipoProdutoId,
+        id: params.rotaId,
       },
       data: { nome }
     });
   
-    return NextResponse.json(tipoProduto);
+    return NextResponse.json(rota);
   } catch (error) {
-    console.log('[TIPOPRODUTO_PATCH]', error);
+    console.log('[ROTA_PATCH]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };

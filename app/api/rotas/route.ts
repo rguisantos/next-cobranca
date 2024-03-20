@@ -21,15 +21,15 @@ export async function POST(
       return new NextResponse("Nome é obrigatório", { status: 400 });
     }
 
-    const tipoProduto = await prismadb.tipoProduto.create({
+    const rota = await prismadb.rota.create({
       data: {
         nome
       }
     });
   
-    return NextResponse.json(tipoProduto);
+    return NextResponse.json(rota);
   } catch (error) {
-    console.log('[TIPOPRODUTOS_POST]', error);
+    console.log('[ROTAS_POST]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
@@ -38,11 +38,11 @@ export async function GET(
   req: Request
 ) {
   try {
-    const tipoProdutos = await prismadb.tipoProduto.findMany();
+    const rotas = await prismadb.rota.findMany();
   
-    return NextResponse.json(tipoProdutos);
+    return NextResponse.json(rotas);
   } catch (error) {
-    console.log('[TIPOPRODUTOS_GET]', error);
+    console.log('[ROTAS_GET]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };

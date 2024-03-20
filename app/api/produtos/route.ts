@@ -36,7 +36,7 @@ export async function POST(
     return NextResponse.json(produto);
   } catch (error) {
     console.log('[Produtos_POST]', error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
 
@@ -65,6 +65,6 @@ export async function GET(
     return NextResponse.json(produtos);
   } catch (error) {
     console.log('[Produtos_GET]', error);
-    return new NextResponse("Internal error", { status: 500 });
+    return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
