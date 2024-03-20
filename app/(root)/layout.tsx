@@ -1,19 +1,22 @@
-import { redirect } from 'next/navigation';
-import { auth, clerkClient } from '@clerk/nextjs';
+// import { redirect } from 'next/navigation';
+// import { auth } from '@clerk/nextjs';
 
-export default async function SetupLayout({
-  children,
+import Navbar from '@/components/navbar'
+
+export default async function DashboardLayout({
+  children
 }: {
   children: React.ReactNode
 }) {
-  const { userId } = auth();
+  // const { userId } = auth();
 
-  if (!userId) {
-    redirect('/sign-in');
-  }
+  // if (!userId) {
+  //   redirect('/sign-in');
+  // }
 
   return (
     <>
+      <Navbar />
       {children}
     </>
   );

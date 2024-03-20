@@ -18,24 +18,19 @@ export function MainNav({
       active: pathname === `/`,
     },
     {
-      href: `/especialidades`,
-      label: 'Especialidades',
-      active: pathname === `/especialidades`,
+      href: `/tipoprodutos`,
+      label: 'Tipo de Produtos',
+      active: pathname === `/tipoprodutos`,
     },
     {
-      href: `/especialistas`,
-      label: 'Especialistas',
-      active: pathname === `/especialistas`,
+      href: `/produtos`,
+      label: 'Produtos',
+      active: pathname === `/produtos`,
     },
     {
-      href: `/slots`,
-      label: 'Slots',
-      active: pathname === `/slots`,
-    },
-    {
-      href: `/settings`,
-      label: 'Configurações',
-      active: pathname === `/settings`,
+      href: `/usuarios`,
+      label: 'Usuários',
+      active: pathname === `/usuarios`,
     },
   ]
 

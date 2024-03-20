@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
+// import { auth } from '@clerk/nextjs';
 
 import prismadb from '@/lib/prismadb';
 import { encryptPassword } from '@/lib/utils';
@@ -8,15 +8,15 @@ export async function POST(
   req: Request
 ) {
   try {
-    const { userId } = auth();
+    // const { userId } = auth();
+
+    // if (!userId) {
+    //   return new NextResponse("Não autenticado", { status: 403 });
+    // }
 
     const body = await req.json();
 
     const { nome } = body;
-
-    if (!userId) {
-      return new NextResponse("Não autenticado", { status: 403 });
-    }
 
     if (!nome) {
       return new NextResponse("Nome é obrigatório", { status: 400 });

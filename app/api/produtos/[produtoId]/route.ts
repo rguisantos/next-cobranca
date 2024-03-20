@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs";
+// import { auth } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
 
@@ -33,11 +33,11 @@ export async function DELETE(
   { params }: { params: { produtoId: string } }
 ) {
   try {
-    const { userId: userAuthId } = auth();
+    // const { userId: userAuthId } = auth();
 
-    if (!userAuthId) {
-      return new NextResponse("Não autenticado", { status: 403 });
-    }
+    // if (!userAuthId) {
+    //   return new NextResponse("Não autenticado", { status: 403 });
+    // }
 
     if (!params.produtoId) {
       return new NextResponse("Id do Produto é obrigatória", { status: 400 });
@@ -62,15 +62,15 @@ export async function PATCH(
   { params }: { params: { produtoId: string } }
 ) {
   try {
-    const { userId: userAuthId } = auth();
+    // const { userId: userAuthId } = auth();
+
+    // if (!userAuthId) {
+    //   return new NextResponse("Não autenticado", { status: 403 });
+    // }
 
     const body = await req.json();
 
     const { tipoProdutoId, plaqueta, contadorRelogio } = body;
-
-    if (!userAuthId) {
-      return new NextResponse("Não autenticado", { status: 403 });
-    }
 
     if (!params.produtoId) {
       return new NextResponse("Id do Produto é obrigatória", { status: 400 });
