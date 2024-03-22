@@ -28,7 +28,7 @@ export const Client: React.FC<ClientProps> = ({
         </Button>
       </div>
       <Separator />
-      <DataTable searchKey="nome" columns={columns} data={data} />
+      <DataTable searchKey="plaqueta" columns={columns} data={data} />
     </>
   );
 };
