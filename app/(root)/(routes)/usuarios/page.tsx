@@ -1,6 +1,6 @@
 import prismadb from "@/lib/prismadb";
 
-import { Client as ClientType } from "./components/columns"
+import { Column} from "./components/columns"
 import { Client } from "./components/client";
 
 const Home = async () => {
@@ -10,7 +10,7 @@ const Home = async () => {
     }
   });
 
-const formattedList: ClientType[] = list.map((item) => ({
+const formattedList: Column[] = list.map((item) => ({
   id: item.id,
   nome: item.nome,
   senha: item.senha,
