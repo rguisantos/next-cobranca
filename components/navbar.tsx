@@ -7,37 +7,45 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { DropdownMenuUser } from "./dropdown-menu-user";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
 
 export const Navbar: React.FC = async () => {
-
-  const user =  () => {
-    return JSON.parse(localStorage.getItem('user')!) as { nome : string };
-  }
-
+  const [usuario, setUsuario] = useState<{ nome: string } | null>(null);
   const router = useRouter();
-  if (!user()) {
-    router.push('/login');
-    return;
-  }
+  useEffect(() => {
+    const user = () => {
+      if (typeof window !== 'undefined') {
+        return JSON.parse(localStorage.getItem('user')!) as { nome : string };
+      }
+      return null;
+    }
+
+    const currentUser = user();
+    if (!currentUser) {
+      router.push('/login');
+    } else {
+      setUsuario(currentUser);
+    }
+  }, []);
 
   const onClickLogout = () => { 
     router.push('/login');
   }
-  return ( 
+  return usuario ? ( 
     <div className="border-b">
       <div className="flex h-16 items-center px-4">
         <MainNav className="mx-6" />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeToggle />
-          <DropdownMenuUser usuario={user()} onClickLogout={onClickLogout}>
+          <DropdownMenuUser usuario={usuario} onClickLogout={onClickLogout}>
             <Avatar>
-              <AvatarFallback>{user()?.nome.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{usuario.nome.charAt(0)}</AvatarFallback>
             </Avatar>
           </DropdownMenuUser>
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
  
 export default Navbar;

@@ -15,18 +15,20 @@ import { fetchWrapper } from "@/helpers/fetch-wrapper"
 import { useRouter } from "next/navigation"
 import { useState } from "react";
 
-function onAcessar(nome: string, senha: string): void {
-    const router = useRouter();
-    fetchWrapper.post(`/api/auth`, { nome, senha })
-        .then(user => {
-            localStorage.setItem('user', JSON.stringify(user));
-            router.push('/');
-        });
-}
-export const LoginCard: React.FC = async () => {
+export const LoginCard: React.FC = () => {
     localStorage.removeItem('user');
     const [nome, setNome] = useState('');
     const [senha, setSenha] = useState('');
+    const router = useRouter();
+
+    const onAcessar = (nome: string, senha: string): void => {
+        fetchWrapper.post(`/api/auth`, { nome, senha })
+            .then(user => {
+                localStorage.setItem('user', JSON.stringify(user));
+                router.push('/');
+            });
+    }
+
     return (
         <Card className="w-[350px]">
             <CardHeader>
