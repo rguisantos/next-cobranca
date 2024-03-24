@@ -1,22 +1,22 @@
 import prismadb from "@/lib/prismadb";
 
-import { CorProdutoForm } from "./components/corproduto-form";
+import { AcessoNaRotaForm } from "./components/acessonarota-form";
 
 const Home = async ({
   params
 }: {
-  params: { corProdutoId: string }
+  params: { acessoNaRotaId: string }
 }) => {
-  const corProduto = await prismadb.corProduto.findUnique({
+  const acessoNaRota = await prismadb.acessoNaRota.findUnique({
     where: {
-      id: params.corProdutoId
+      id: params.acessoNaRotaId
     }
   });
 
   return ( 
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <CorProdutoForm initialData={corProduto} />
+        <AcessoNaRotaForm initialData={acessoNaRota} />
       </div>
     </div>
   );

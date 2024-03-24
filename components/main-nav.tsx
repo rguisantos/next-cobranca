@@ -37,6 +37,11 @@ export function MainNav({
       label: 'Rotas',
       active: pathname === `/rotas`,
     },
+    {
+      href: `/acessonarota`,
+      label: 'Acessos',
+      active: pathname === `/acessonarota`,
+    },
   ]
 
   return (
