@@ -18,6 +18,8 @@ export async function GET(
       },
       include: {
         tipoProduto: true,
+        tamanhoProduto: true,
+        corProduto: true,
       }
     });
   
@@ -70,7 +72,7 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const { tipoProdutoId, plaqueta, contadorRelogio } = body;
+    const { tipoProdutoId, plaqueta, contadorRelogio, tamanhoProdutoId, corProdutoId } = body;
 
     if (!params.produtoId) {
       return new NextResponse("Id do Produto é obrigatória", { status: 400 });
@@ -88,6 +90,14 @@ export async function PATCH(
       return new NextResponse("Color id is required", { status: 400 });
     }
 
+    if (!tamanhoProdutoId) {
+      return new NextResponse("Id do Tamanho do Produto é obrigatório", { status: 400 });
+    }
+
+    if (!corProdutoId) {
+      return new NextResponse("Id da Cor do Produto é obrigatório", { status: 400 });
+    }
+
     const produto = await prismadb.produto.update({
       where: {
         id: params.produtoId
@@ -95,7 +105,9 @@ export async function PATCH(
       data: {
         plaqueta,
         tipoProdutoId,
-        contadorRelogio
+        contadorRelogio,
+        tamanhoProdutoId,
+        corProdutoId,
       },
     });
   

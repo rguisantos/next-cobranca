@@ -14,6 +14,18 @@ const Home = async ({
     }
   });
 
+  const tamanhoProdutos = await prismadb.tamanhoProduto.findMany({
+    orderBy:{
+      medida: "asc"
+    }
+  });
+
+  const corProdutos = await prismadb.corProduto.findMany({
+    orderBy:{
+      nome: "asc"
+    }
+  });
+  
   const produto = await prismadb.produto.findUnique({
     where: {
       id: params.produtoId
@@ -23,7 +35,7 @@ const Home = async ({
   return ( 
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ProdutoForm initialData={produto} tiposProdutos={tiposProdutos}/>
+        <ProdutoForm initialData={produto} tiposProdutos={tiposProdutos} tamanhoProdutos={tamanhoProdutos} corProdutos={corProdutos}/>
       </div>
     </div>
   );

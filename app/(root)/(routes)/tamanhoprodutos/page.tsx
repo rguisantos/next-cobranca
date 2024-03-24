@@ -4,24 +4,15 @@ import { Column } from "./components/columns"
 import { Client } from "./components/client";
 
 const Home = async () => {
-  const list = await prismadb.produto.findMany({
-    include: {
-      tipoProduto: true,
-      tamanhoProduto: true,
-      corProduto: true,
-    },
+  const list = await prismadb.tamanhoProduto.findMany({
     orderBy: {
-      plaqueta: 'asc'
+      medida: 'asc'
     }
   });
 
   const formattedList: Column[] = list.map((item) => ({
     id: item.id,
-    plaqueta: item.plaqueta,
-    tipoProduto: item.tipoProduto.nome,
-    contadorRelogio: item.contadorRelogio,
-    tamanhoProduto: item.tamanhoProduto.medida,
-    corProduto: item.corProduto.nome,
+    nome: item.medida,
   }));
 
   return (

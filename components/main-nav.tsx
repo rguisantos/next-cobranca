@@ -18,9 +18,9 @@ export function MainNav({
       active: pathname === `/`,
     },
     {
-      href: `/tipoprodutos`,
-      label: 'Tipo de Produtos',
-      active: pathname === `/tipoprodutos`,
+      href: `/clientes`,
+      label: 'Clientes',
+      active: pathname === `/clientes`,
     },
     {
       href: `/produtos`,
@@ -31,6 +31,11 @@ export function MainNav({
       href: `/usuarios`,
       label: 'Usuários',
       active: pathname === `/usuarios`,
+    },
+    {
+      href: `/rotas`,
+      label: 'Rotas',
+      active: pathname === `/rotas`,
     },
   ]
 

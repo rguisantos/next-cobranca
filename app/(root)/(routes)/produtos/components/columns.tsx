@@ -9,6 +9,8 @@ export type Column = {
   tipoProduto: string;
   plaqueta: number;
   contadorRelogio: number;
+  tamanhoProduto: string;
+  corProduto: string;
 }
 
 export const columns: ColumnDef<Column>[] = [
@@ -23,6 +25,14 @@ export const columns: ColumnDef<Column>[] = [
   {
     accessorKey: "contadorRelogio",
     header: "Contador",
+  },
+  {
+    accessorKey: "tamanhoProduto",
+    header: "Tamanho do Produto",
+  },
+  {
+    accessorKey: "corProduto",
+    header: "Cor do Produto",
   },
   {
     id: "actions",

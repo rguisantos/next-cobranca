@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 // import { auth } from '@clerk/nextjs';
 
 import prismadb from '@/lib/prismadb';
+import { co } from '@fullcalendar/core/internal-common';
 
 export async function POST(
   req: Request
@@ -15,7 +16,7 @@ export async function POST(
 
     const body = await req.json();
 
-    const { tipoProdutoId, plaqueta, contadorRelogio } = body;
+    const { tipoProdutoId, plaqueta, contadorRelogio, tamanhoProdutoId, corProdutoId } = body;
 
     if (!plaqueta) {
       return new NextResponse("Plaqueta é obrigatório", { status: 400 });
@@ -29,8 +30,22 @@ export async function POST(
       return new NextResponse("Contador é obrigatório", { status: 400 });
     }
 
+    if (!tamanhoProdutoId) {
+      return new NextResponse("Id do Tamanho do Produto é obrigatório", { status: 400 });
+    }
+
+    if (!corProdutoId) {  
+      return new NextResponse("Id da Cor do Produto é obrigatório", { status: 400 });
+    }
+
     const produto = await prismadb.produto.create({
-      data: {tipoProdutoId, plaqueta, contadorRelogio},
+      data: {
+        tipoProdutoId,
+        plaqueta,
+        contadorRelogio,
+        tamanhoProdutoId,
+        corProdutoId,
+      },
     });
   
     return NextResponse.json(produto);
@@ -56,6 +71,8 @@ export async function GET(
       },
       include: {
         tipoProduto: true,
+        corProduto: true,
+        tamanhoProduto: true,
       },
       orderBy: {
         plaqueta: 'asc',

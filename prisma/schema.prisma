@@ -28,15 +28,30 @@ model TipoProduto {
   produtos Produto[] @relation("TipoProdutoComProduto")
 }
 
+model CorProduto {
+  id       String    @id @default(uuid())
+  nome     String
+  produtos Produto[] @relation("CorProdutoComProduto")
+}
+
+model TamanhoProduto {
+  id       String    @id @default(uuid())
+  medida   String
+  produtos Produto[] @relation("TamanhoProdutoComProduto")
+}
+
 model Produto {
-  id              String      @id @default(uuid())
-  tipoProdutoId   String // Foreign Key to TipoProduto
-  tipoProduto     TipoProduto @relation("TipoProdutoComProduto", fields: [tipoProdutoId], references: [id])
-  plaqueta        Int         @unique // Plaqueta é a numeração da máquina/mesa
-  estaLocada      Boolean     @default(false) //quando locar, deve ser alterado para true, quando 
-  														//estiver no estoque deve retornar para false, para um nova locação
-  locacoes        Locacao[]   @relation("ProdutoComLocacao")
-  contadorRelogio Int         @default(0)
+  id               String         @id @default(uuid())
+  tipoProdutoId    String
+  plaqueta         Int            @unique
+  corProdutoId     String
+  tamanhoProdutoId String
+  estaLocada       Boolean        @default(false)
+  contadorRelogio  Int            @default(0)
+  tipoProduto      TipoProduto    @relation("TipoProdutoComProduto", fields: [tipoProdutoId], references: [id])
+  corProduto       CorProduto     @relation("CorProdutoComProduto", fields: [corProdutoId], references: [id])
+  tamanhoProduto   TamanhoProduto @relation("TamanhoProdutoComProduto", fields: [tamanhoProdutoId], references: [id])
+  locacoes         Locacao[]      @relation("ProdutoComLocacao")
 
   @@index([tipoProdutoId])
 }
@@ -50,19 +65,19 @@ model Rota {
 
 model Locacao {
   id                  String     @id @default(uuid())
-  produtoId           String // Foreign Key to Produto
-  produto             Produto    @relation("ProdutoComLocacao", fields: [produtoId], references: [id])
-  clienteId           String // Foreign Key to Cliente
-  cliente             Cliente    @relation("ClienteComLocacao", fields: [clienteId], references: [id])
-  rotaId              String // Foreign Key to Rota
-  rota                Rota       @relation("RotaComLocacao", fields: [rotaId], references: [id])
-  ehTipoLocacaoMensal Boolean    @default(false) // se locação for mensal, então usar valor_mensal, caso não utilizar valor ficha
+  produtoId           String
+  clienteId           String
+  rotaId              String
+  ehTipoLocacaoMensal Boolean    @default(false)
   valorMensal         Float      @default(0)
   porcentagemEmpresa  Float      @default(0)
   porcentagemCliente  Float      @default(0)
   valorFicha          Float      @default(0)
-  cobrancas           Cobranca[] @relation("LocacaoComCobranca") // uma locação pode ter várias cobranças
   valorSaldoDevedor   Float      @default(0)
+  produto             Produto    @relation("ProdutoComLocacao", fields: [produtoId], references: [id])
+  cliente             Cliente    @relation("ClienteComLocacao", fields: [clienteId], references: [id])
+  rota                Rota       @relation("RotaComLocacao", fields: [rotaId], references: [id])
+  cobrancas           Cobranca[] @relation("LocacaoComCobranca")
 
   @@index([produtoId])
   @@index([rotaId])
@@ -70,29 +85,21 @@ model Locacao {
 }
 
 model Cobranca {
-  id         String  @id @default(uuid())
-  cobrancaId String // Foreign Key to Cobranca
-  cobranca   Locacao @relation("LocacaoComCobranca", fields: [cobrancaId], references: [id])
-
-  valorSaldoDevedorAnterior Float @default(0)
-
-  relogioAtual    Int @default(0) // preenchido manual pelo cobrador
-  partidasJogadas Int @default(0) // calculado automaticamente
-  descontoPartida Int @default(0) // preenchido manual pelo cobrador
-
-  valorEmpresa          Float @default(0) // calculado automaticamente
-  valorDescontoEmpresa  Float @default(0) // preenchido manual pelo cobrador, limitado ao valor da cobrança atual, 
-  														// para n impactar no saldo devedor
-  valorAcrescimoEmpresa Float @default(0) // preenchido manual pelo cobrador, limitado ao valor da cobrança atual, 
-  														// para n impactar no saldo devedor
-
-  valorParaEmpresaReceber  Float @default(0) // calculado automaticamente
-  valorRecebidoPelaEmpresa Float @default(0) // preenchido manual pelo cobrador
-
-  valorParaClienteReceber  Float @default(0) // calculado automaticamente
-  valorRecebidoPeloCliente Float @default(0) // preenchido manual pelo cobrador
-
-  valorParaProximaCobranca Float @default(0) // calculado automaticamente
+  id                        String  @id @default(uuid())
+  cobrancaId                String
+  valorSaldoDevedorAnterior Float   @default(0)
+  relogioAtual              Int     @default(0)
+  partidasJogadas           Int     @default(0)
+  descontoPartida           Int     @default(0)
+  valorEmpresa              Float   @default(0)
+  valorDescontoEmpresa      Float   @default(0)
+  valorAcrescimoEmpresa     Float   @default(0)
+  valorParaEmpresaReceber   Float   @default(0)
+  valorRecebidoPelaEmpresa  Float   @default(0)
+  valorParaClienteReceber   Float   @default(0)
+  valorRecebidoPeloCliente  Float   @default(0)
+  valorParaProximaCobranca  Float   @default(0)
+  cobranca                  Locacao @relation("LocacaoComCobranca", fields: [cobrancaId], references: [id])
 
   @@index([cobrancaId])
 }
@@ -106,9 +113,9 @@ model Usuario {
 
 model AcessoNaRota {
   id        String  @id @default(uuid())
-  usuarioId String // Foreign Key to Usuario
+  usuarioId String
+  rotaId    String
   usuario   Usuario @relation("UsuarioComAcessoNaRota", fields: [usuarioId], references: [id])
-  rotaId    String // Foreign Key to Rota
   rota      Rota    @relation("RotaComAcessoNaRota", fields: [rotaId], references: [id])
 
   @@index([rotaId])

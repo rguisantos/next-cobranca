@@ -22,11 +22,12 @@ export async function POST(
       return new NextResponse("Nome é obrigatório", { status: 400 });
     }
 
+    const senhaCriptografada = await encryptPassword(process.env.SENHA_PADRAO!, process.env.SECRET_KEY_CRYPT! );
 
     const usuario = await prismadb.usuario.create({
       data: {
         nome,
-        senha:encryptPassword(process.env.SENHA_PADRAO!, process.env.SECRET_KEY_CRYPT! )
+        senha: senhaCriptografada
       }
     });
   
@@ -47,9 +48,37 @@ export async function GET(
       }
     });
   
-    return NextResponse.json(usuarios.map(usuario => { usuario.nome, usuario.acessosNaRota }));
+    return NextResponse.json(usuarios.map(usuario => ({ nome: usuario.nome, acessosNaRota: usuario.acessosNaRota })));
   } catch (error) {
     console.log('[USUARIOS_GET]', error);
+    return new NextResponse("Erro Interno do Servidor", { status: 500 });
+  }
+};
+export async function PUT(
+  req: Request
+) {
+  try {
+    const body = await req.json();
+
+    const { id, nome, senha } = body;
+
+    if (!id) {
+      return new NextResponse("ID do usuário é obrigatório", { status: 400 });
+    }
+
+    const senhaCriptografada = senha ? await encryptPassword(senha, process.env.SECRET_KEY_CRYPT!) : undefined;
+
+    const usuario = await prismadb.usuario.update({
+      where: { id },
+      data: {
+        ...(nome && { nome }),
+        ...(senhaCriptografada && { senha: senhaCriptografada })
+      }
+    });
+  
+    return NextResponse.json(usuario);
+  } catch (error) {
+    console.log('[USUARIOS_PUT]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
   }
 };
