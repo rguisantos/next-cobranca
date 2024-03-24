@@ -3,16 +3,15 @@ import { NextResponse } from 'next/server';
 
 import prismadb from '@/lib/prismadb';
 import { encryptPassword } from '@/lib/utils';
+import { getUserJwt } from '@/helpers/api/jwt-util';
  
 export async function POST(
-  req: Request
+  req: Request,
 ) {
   try {
-    // const { userId } = auth();
-
-    // if (!userId) {
-    //   return new NextResponse("Não autenticado", { status: 403 });
-    // }
+    const user = getUserJwt(req);
+    if(!user)
+      return new NextResponse("Usuário não autorizado", { status: 401 });
 
     const body = await req.json();
 
@@ -39,9 +38,13 @@ export async function POST(
 };
 
 export async function GET(
-  req: Request
+  req: Request,
 ) {
   try {
+    const user = getUserJwt(req);
+    if(!user)
+      return new NextResponse("Usuário não autorizado", { status: 401 });
+
     const usuarios = await prismadb.usuario.findMany({
       include:{
         acessosNaRota:true
@@ -58,6 +61,10 @@ export async function PUT(
   req: Request
 ) {
   try {
+    const user = getUserJwt(req);
+    if(!user)
+      return new NextResponse("Usuário não autorizado", { status: 401 });
+
     const body = await req.json();
 
     const { id, nome, senha } = body;

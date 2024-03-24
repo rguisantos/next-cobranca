@@ -54,6 +54,8 @@ model Produto {
   locacoes         Locacao[]      @relation("ProdutoComLocacao")
 
   @@index([tipoProdutoId])
+  @@index([tamanhoProdutoId])
+  @@index([corProdutoId])
 }
 
 model Rota {

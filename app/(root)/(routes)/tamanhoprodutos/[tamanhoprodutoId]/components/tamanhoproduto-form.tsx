@@ -1,7 +1,6 @@
-"use client"
+'use client'
 
 import * as z from "zod"
-import axios from "axios"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -23,6 +22,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
+import { fetchWrapper } from "@/helpers/fetch-wrapper"
 
 const formSchema = z.object({
   medida: z.string().min(2),
@@ -59,9 +59,9 @@ export const TamanhoProdutoForm: React.FC<TamanhoProdutoFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/tamanhoprodutos/${params.tamanhoprodutoId}`, data);
+        await fetchWrapper.patch(`/api/tamanhoprodutos/${params.tamanhoprodutoId}`, data);
       } else {
-        await axios.post(`/api/tamanhoprodutos`, data);
+        await fetchWrapper.post(`/api/tamanhoprodutos`, data);
       }
       router.refresh();
       router.push(`/tamanhoprodutos`);
@@ -76,7 +76,7 @@ export const TamanhoProdutoForm: React.FC<TamanhoProdutoFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/tamanhoprodutos/${params.tamanhoprodutoId}`);
+      await fetchWrapper.delete(`/api/tamanhoprodutos/${params.tamanhoprodutoId}`);
       router.refresh();
       router.push(`/tamanhoprodutos`);
       toast.success('Tamanho de produto removido.');

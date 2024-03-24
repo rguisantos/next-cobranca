@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
 import * as z from "zod"
-import axios from "axios"
+
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -23,6 +23,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
+import { fetchWrapper } from "@/helpers/fetch-wrapper"
 
 const formSchema = z.object({
   id: z.string().min(1),
@@ -59,9 +60,9 @@ export const AcessoNaRotaForm: React.FC<AcessoNaRotaFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/acessonarota/${params.acessoNaRotaId}`, data);
+        await fetchWrapper.patch(`/api/acessonarota/${params.acessoNaRotaId}`, data);
       } else {
-        await axios.post(`/api/acessonarota`, data);
+        await fetchWrapper.post(`/api/acessonarota`, data);
       }
       router.refresh();
       router.push(`/acessonarota`);
@@ -76,7 +77,7 @@ export const AcessoNaRotaForm: React.FC<AcessoNaRotaFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/acessonarota/${params.acessoNaRotaId}`);
+      await fetchWrapper.delete(`/api/acessonarota/${params.acessoNaRotaId}`);
       router.refresh();
       router.push(`/acessonarota`);
       toast.success('Acesso removido.');

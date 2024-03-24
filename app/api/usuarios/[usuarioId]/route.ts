@@ -2,12 +2,17 @@ import { NextResponse } from "next/server";
 // import { auth } from "@clerk/nextjs";
 
 import prismadb from "@/lib/prismadb";
+import { getUserJwt } from "@/helpers/api/jwt-util";
 
 export async function GET(
   req: Request,
   { params }: { params: { usuarioId: string } }
 ) {
   try {
+    const user = getUserJwt(req);
+    if(!user)
+      return new NextResponse("Usuário não autorizado", { status: 401 });
+
     if (!params.usuarioId) {
       return new NextResponse("UsuarioId é obrigatório", { status: 400 });
     }
@@ -33,11 +38,9 @@ export async function DELETE(
   { params }: { params: { usuarioId: string } }
 ) {
   try {
-    // const { userId } = auth();
-
-    // if (!userId) {
-    //   return new NextResponse("Não autenticado", { status: 403 });
-    // }
+    const user = getUserJwt(req);
+    if(!user)
+      return new NextResponse("Usuário não autorizado", { status: 401 });
 
     if (!params.usuarioId) {
       return new NextResponse("UsuarioId é obrigatório", { status: 400 });
@@ -62,11 +65,9 @@ export async function PATCH(
   { params }: { params: { usuarioId: string } }
 ) {
   try {   
-    // const { userId } = auth();
-    
-    // if (!userId) {
-    //   return new NextResponse("Não autenticado", { status: 403 });
-    // }
+    const user = getUserJwt(req);
+    if(!user)
+      return new NextResponse("Usuário não autorizado", { status: 401 });
 
     const body = await req.json();
     

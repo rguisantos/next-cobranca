@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";

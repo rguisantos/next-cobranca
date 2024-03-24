@@ -1,7 +1,6 @@
-"use client"
+'use client'
 
 import * as z from "zod"
-import axios from "axios"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -22,6 +21,7 @@ import {
   FormItem,
   FormMessage
 } from "@/components/ui/form"
+import { fetchWrapper } from "@/helpers/fetch-wrapper"
 
 const formSchema = z.object({
   nome: z.string().min(1),
@@ -58,9 +58,9 @@ export const RotaForm: React.FC<RotaFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/rotas/${params.rotaId}`, data);
+        await fetchWrapper.patch(`/api/rotas/${params.rotaId}`, data);
       } else {
-        await axios.post(`/api/rotas`, data);
+        await fetchWrapper.post(`/api/rotas`, data);
       }
       router.refresh();
       router.push(`/rotas`);
@@ -74,7 +74,7 @@ export const RotaForm: React.FC<RotaFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/rotas/${params.rotaId}`);
+      await fetchWrapper.delete(`/api/rotas/${params.rotaId}`);
       router.refresh();
       router.push(`/rotas`);
       toast.success('Rota removida.');

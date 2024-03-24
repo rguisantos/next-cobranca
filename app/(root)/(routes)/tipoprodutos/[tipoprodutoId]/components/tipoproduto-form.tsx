@@ -1,7 +1,6 @@
-"use client"
+'use client'
 
 import * as z from "zod"
-import axios from "axios"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -23,6 +22,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
+import { fetchWrapper } from "@/helpers/fetch-wrapper"
 
 const formSchema = z.object({
   nome: z.string().min(2),
@@ -59,9 +59,9 @@ export const TipoProdutoForm: React.FC<TipoProdutoFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/tipoprodutos/${params.tipoprodutoId}`, data);
+        await fetchWrapper.patch(`/api/tipoprodutos/${params.tipoprodutoId}`, data);
       } else {
-        await axios.post(`/api/tipoprodutos`, data);
+        await fetchWrapper.post(`/api/tipoprodutos`, data);
       }
       router.refresh();
       router.push(`/tipoprodutos`);
@@ -76,7 +76,7 @@ export const TipoProdutoForm: React.FC<TipoProdutoFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/tipoprodutos/${params.tipoprodutoId}`);
+      await fetchWrapper.delete(`/api/tipoprodutos/${params.tipoprodutoId}`);
       router.refresh();
       router.push(`/tipoprodutos`);
       toast.success('Tipo de produto removido.');

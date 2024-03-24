@@ -1,6 +1,5 @@
-"use client";
+'use client';
 
-import axios from "axios";
 import { useState } from "react";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -17,6 +16,7 @@ import {
 import { AlertModal } from "@/components/modals/alert-modal";
 
 import { Column } from "./columns";
+import { fetchWrapper } from "@/helpers/fetch-wrapper";
 
 interface CellActionProps {
   data: Column;
@@ -32,7 +32,7 @@ export const CellAction: React.FC<CellActionProps> = ({
   const onConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/rotas/${data.id}`);
+      await fetchWrapper.delete(`/api/rotas/${data.id}`);
       toast.success('Rota removida.');
       router.refresh();
     } catch (error) {

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { CldUploadWidget } from 'next-cloudinary';
+//import { CldUploadWidget } from 'next-cloudinary';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -53,7 +53,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           </div>
         ))}
       </div>
-      <CldUploadWidget onUpload={onUpload} uploadPreset="xfkii7zf">
+      {/* <CldUploadWidget onUpload={onUpload} uploadPreset="xfkii7zf">
         {({ open }) => {
           const onClick = () => {
             open();
@@ -71,7 +71,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             </Button>
           );
         }}
-      </CldUploadWidget>
+      </CldUploadWidget> */}
     </div>
   );
 }

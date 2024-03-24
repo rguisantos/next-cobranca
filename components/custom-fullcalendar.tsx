@@ -1,5 +1,5 @@
+'use client'
 
-"use client"
 import { DateSelectArg, EventClickArg, EventSourceInput } from '@fullcalendar/core'
 import FullCalendar from '@fullcalendar/react'
 import interactionPlugin, { DateClickArg, Draggable, DropArg } from '@fullcalendar/interaction'
@@ -25,7 +25,6 @@ export const CustomFullCalendar: React.FC<CustomFullCalendarProps> = ({
 items
 }) => {
     const [allEvents, setAllEvents] = useState<Event[]>(items)
-    console.log(allEvents);
     function handleDateSelect(arg: DateSelectArg): void {
         addEvent({start:arg.start, title:"teste"});
     }

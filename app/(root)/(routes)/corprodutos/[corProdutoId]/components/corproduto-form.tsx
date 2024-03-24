@@ -1,7 +1,6 @@
-"use client"
+'use client'
 
 import * as z from "zod"
-import axios from "axios"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -23,6 +22,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
+import { fetchWrapper } from "@/helpers/fetch-wrapper"
 
 const formSchema = z.object({
   nome: z.string().min(2),
@@ -59,9 +59,9 @@ export const CorProdutoForm: React.FC<CorProdutoFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/corprodutos/${params.corprodutoId}`, data);
+        await fetchWrapper.patch(`/api/corprodutos/${params.corprodutoId}`, data);
       } else {
-        await axios.post(`/api/corprodutos`, data);
+        await fetchWrapper.post(`/api/corprodutos`, data);
       }
       router.refresh();
       router.push(`/corprodutos`);
@@ -76,7 +76,7 @@ export const CorProdutoForm: React.FC<CorProdutoFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/corprodutos/${params.corprodutoId}`);
+      await fetchWrapper.delete(`/api/corprodutos/${params.corprodutoId}`);
       router.refresh();
       router.push(`/corprodutos`);
       toast.success('Cor de produto removida.');

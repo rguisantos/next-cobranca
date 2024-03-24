@@ -1,7 +1,6 @@
-"use client"
+'use client'
 
 import * as z from "zod"
-import axios from "axios"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -22,6 +21,7 @@ import {
   FormItem,
   FormMessage
 } from "@/components/ui/form"
+import { fetchWrapper } from "@/helpers/fetch-wrapper"
 
 const formSchema = z.object({
   nome: z.string().min(1),
@@ -59,9 +59,9 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/usuarios/${params.usuarioId}`, data);
+        await fetchWrapper.patch(`/api/usuarios/${params.usuarioId}`, data);
       } else {
-        await axios.post(`/api/usuarios`, data);
+        await fetchWrapper.post(`/api/usuarios`, data);
       }
       router.refresh();
       router.push(`/usuarios`);
@@ -75,7 +75,7 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/usuarios/${params.usuarioId}`);
+      await fetchWrapper.delete(`/api/usuarios/${params.usuarioId}`);
       router.refresh();
       router.push(`/usuarios`);
       toast.success('Usuário removido.');

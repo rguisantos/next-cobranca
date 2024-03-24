@@ -1,7 +1,6 @@
-"use client"
+'use client'
 
 import * as z from "zod"
-import axios from "axios"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -22,6 +21,7 @@ import {
   FormItem,
   FormMessage
 } from "@/components/ui/form"
+import { fetchWrapper } from "@/helpers/fetch-wrapper"
 
 
 const formSchema = z.object({
@@ -66,9 +66,9 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/clientes/${params.clienteId}`, data);
+        await fetchWrapper.patch(`/api/clientes/${params.clienteId}`, data);
       } else {
-        await axios.post(`/api/clientes`, data);
+        await fetchWrapper.post(`/api/clientes`, data);
       }
       router.refresh();
       router.push(`/clientes`);
@@ -83,7 +83,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/produtos/${params.clienteId}`);
+      await fetchWrapper.delete(`/api/produtos/${params.clienteId}`);
       router.refresh();
       router.push(`/clientes`);
       toast.success('Cliente removido.');

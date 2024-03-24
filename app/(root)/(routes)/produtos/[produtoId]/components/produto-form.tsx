@@ -1,7 +1,6 @@
-"use client"
+'use client'
 
 import * as z from "zod"
-import axios from "axios"
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -23,6 +22,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { fetchWrapper } from "@/helpers/fetch-wrapper"
 
 const formSchema = z.object({
   plaqueta: z.coerce.number().min(1),
@@ -79,9 +79,9 @@ export const ProdutoForm: React.FC<ProdutoFormProps> = ({
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/produtos/${params.produtoId}`, data);
+        await fetchWrapper.patch(`/api/produtos/${params.produtoId}`, data);
       } else {
-        await axios.post(`/api/produtos`, data);
+        await fetchWrapper.post(`/api/produtos`, data);
       }
       router.refresh();
       router.push(`/produtos`);
@@ -96,7 +96,7 @@ export const ProdutoForm: React.FC<ProdutoFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/produtos/${params.produtoId}`);
+      await fetchWrapper.delete(`/api/produtos/${params.produtoId}`);
       router.refresh();
       router.push(`/produtos`);
       toast.success('Produto removido.');

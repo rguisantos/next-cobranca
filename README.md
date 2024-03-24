@@ -20,6 +20,9 @@ npm i
 
 ```js
 DATABASE_URL='./dev.db'
+SECRET_KEY_JWT=
+SECRET_KEY_CRYPT=
+SENHA_PADRAO=
 ```
 
 ### Push Prisma
