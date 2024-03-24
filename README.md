@@ -1,32 +1,3 @@
-# Full Stack E-Commerce + Dashboard & CMS: Next.js 13 App Router, React, Tailwind, Prisma, MySQL, 2023
-
-![Copy of Copy of Fullstack Twitter Clone (1)](https://github.com/AntonioErdeljac/next13-ecommerce-admin/assets/23248726/088760cb-837d-44b7-a959-63089385d0a0)
-
-
-For DEMO, use [Stripe Testing Cards](https://stripe.com/docs/testing)
-
-This is a repository for a Full Stack E-Commerce + Dashboard & CMS: Next.js 13 App Router, React, Tailwind, Prisma, MySQL
-
-[VIDEO TUTORIAL](https://youtu.be/5miHyP6lExg)
-
-Key Features:
-
-- We will be using Shadcn UI for the Admin!
-- Our admin dashboard is going to serve as both CMS, Admin and API!
-- You will be able to control mulitple vendors / clinicas through this single CMS! (For example you can have a "Shoe store" and a "Laptop store" and a "Suit store", and our CMS will generate API routes for all of those individually!)
-- You will be able to create, update and delete especialidades!
-- You will be able to create, update and delete especialistas!
-- You will be able to upload multiple images for especialistas, and change them whenever you want!
-- You will be able to create, update and delete filters such as "Color" and "Size", and then match them in the "Especialista" creation form.
-- You will be able to Search through all especialidades, especialistas, sizes, colors with included pagination!
-- You will be able to control which especialistas are "featured" so they show on the homepage!
-- You will be able to see your orders, sales, etc.
-- You will be able to see graphs of your revenue etc.
-- You will learn Clerk Authentication!
-- Order creation
-- Stripe checkout
-- Stripe webhooks
-- MySQL + Prisma + PlanetScale
 
 ### Prerequisites
 
@@ -35,7 +6,7 @@ Key Features:
 ### Cloning the repository
 
 ```shell
-git clone https://github.com/AntonioErdeljac/next13-ecommerce-admin.git
+git clone https://github.com/rguilherme10/next-cobranca.git
 ```
 
 ### Install packages
@@ -48,28 +19,10 @@ npm i
 
 
 ```js
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
-
-# This was inserted by `prisma init`:
-# Environment variables declared in this file are automatically made available to Prisma.
-# See the documentation for more detail: https://pris.ly/d/prisma-schema#accessing-environment-variables-from-the-schema
-
-# Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
-# See the documentation for all the connection string options: https://pris.ly/d/connection-strings
-
-DATABASE_URL=''
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=""
-STRIPE_API_KEY=
-FRONTEND_CLINICA_URL=http://localhost:3001
-STRIPE_WEBHOOK_SECRET=
+DATABASE_URL='./dev.db'
 ```
 
-### Connect to PlanetScale and Push Prisma
+### Push Prisma
 ```shell
 npx prisma generate
 npx prisma db push
