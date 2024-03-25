@@ -51,7 +51,11 @@ export async function GET(
     if(!user)
       return new NextResponse("Usuário não autorizado", { status: 401 });
 
-    const clientes = await prismadb.cliente.findMany();
+    const clientes = await prismadb.cliente.findMany({
+      orderBy: {
+        nome: 'asc'
+      }
+    });
   
     return NextResponse.json(clientes);
   } catch (error) {

@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 // import { auth } from '@clerk/nextjs';
 
 import prismadb from '@/lib/prismadb';
-import { co } from '@fullcalendar/core/internal-common';
 
 export async function POST(
   req: Request

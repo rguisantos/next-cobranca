@@ -51,7 +51,7 @@ export async function GET(
       }
     });
   
-    return NextResponse.json(usuarios.map(usuario => ({ nome: usuario.nome, acessosNaRota: usuario.acessosNaRota })));
+    return NextResponse.json(usuarios.map(usuario => ({ id: usuario.id, nome: usuario.nome, acessosNaRota: usuario.acessosNaRota })));
   } catch (error) {
     console.log('[USUARIOS_GET]', error);
     return new NextResponse("Erro Interno do Servidor", { status: 500 });
