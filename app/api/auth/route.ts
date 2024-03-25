@@ -18,11 +18,25 @@ export async function POST(
       const { nome, senha } = body;
 
       if(nome==="ribamar" && senha==="639503"){
-        const token = jwt.sign({ sub: "ribamar" }, process.env.SECRET_KEY_JWT!, { expiresIn: '7d' });
-        return NextResponse.json({
+        const user = { 
           id: "ribamar",
           nome: "Ribamar",
           rotas: [ ],
+        };
+
+        const token = jwt.sign(user, process.env.SECRET_KEY_JWT!, { expiresIn: '7d' });
+    
+        cookies().set({
+          name: 'JWT_AUTH',
+          value: token,
+          httpOnly: true,
+          path: '/',
+          secure: true,
+          expires: Date.now() + (7* 24 * 60 * 60 * 1000)
+        });
+        
+        return NextResponse.json({
+          ...user,
           token
       });
     }
@@ -46,8 +60,13 @@ export async function POST(
 
       if(usuario.senha !==senhaCriptografada)  throw 'Usuário ou senha inválido';
   
+      const user = { 
+        id: usuario.id,
+        nome: usuario.nome,
+        rotas: [...usuario.acessosNaRota.map(acessoRota=> acessoRota.rota.id)],
+      };
       // create a jwt token that is valid for 7 days
-      const token = jwt.sign({ sub: usuario.id }, process.env.SECRET_KEY_JWT!, { expiresIn: '7d' });
+      const token = jwt.sign(user, process.env.SECRET_KEY_JWT!, { expiresIn: '7d' });
     
       cookies().set({
         name: 'JWT_AUTH',
@@ -56,12 +75,10 @@ export async function POST(
         path: '/',
         secure: true,
         expires: Date.now() + (7* 24 * 60 * 60 * 1000)
-      })
+      });
 
       return NextResponse.json({
-            id: usuario.id,
-            nome: usuario.nome,
-            rotas: [ ...usuario.acessosNaRota.map(acessoRota => acessoRota.rota.nome)],
+            ...user,
             token
         });
     } catch (error) {
