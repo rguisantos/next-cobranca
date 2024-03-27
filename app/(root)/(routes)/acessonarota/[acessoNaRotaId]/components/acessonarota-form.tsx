@@ -24,8 +24,6 @@ import { Heading } from "@/components/ui/heading"
 import { AlertModal } from "@/components/modals/alert-modal"
 import { fetchWrapper } from "@/helpers/fetch-wrapper"
 const formSchema = z.object({
-  usuario: z.string().min(1),
-  rota: z.string().min(1),
   rotaId: z.string().min(1),
   usuarioId: z.string().min(1),
 });
@@ -128,7 +126,7 @@ export const AcessoNaRotaForm: React.FC<AcessoNaRotaFormProps> = ({
           <div className="md:grid md:grid-cols-3 gap-8">
             <FormField
               control={form.control}
-              name="usuario"
+              name="usuarioId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Usuário</FormLabel>
@@ -150,7 +148,7 @@ export const AcessoNaRotaForm: React.FC<AcessoNaRotaFormProps> = ({
             />
             <FormField
               control={form.control}
-              name="rota"
+              name="rotaId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Rota</FormLabel>
