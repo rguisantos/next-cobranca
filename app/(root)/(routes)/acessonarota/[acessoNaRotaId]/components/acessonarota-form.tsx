@@ -53,7 +53,7 @@ export const AcessoNaRotaForm: React.FC<AcessoNaRotaFormProps> = ({
   const description = initialData ? 'Modificar um Acesso.' : 'Adicionar um Novo Acesso';
   const toastMessage = initialData ? 'Acesso a Rota atualizado.' : 'Acesso a Rota adicionado.';
   const action = initialData ? 'Salvar alterações' : 'Adicionar';
-
+    
   const defaultValues = initialData ? {
     ...initialData,
     usuarioId: initialData.usuarioId,
@@ -126,28 +126,28 @@ export const AcessoNaRotaForm: React.FC<AcessoNaRotaFormProps> = ({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="md:grid md:grid-cols-3 gap-8">
-          <FormField
-  control={form.control}
-  name="usuario"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Usuário</FormLabel>
-      <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-        <FormControl>
-          <SelectTrigger>
-            <SelectValue defaultValue={field.value} placeholder="Escolha uma Especialidade" />
-          </SelectTrigger>
-        </FormControl>
-        <SelectContent>
-        {usuarios && usuarios.map((usuario) => (
-            <SelectItem key={usuario.id} value={usuario.id}>{usuario.nome}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+            <FormField
+              control={form.control}
+              name="usuario"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Usuário</FormLabel>
+                  <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue defaultValue={field.value} placeholder="Escolha uma Especialidade" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {usuarios && usuarios.map((usuario) => (
+                        <SelectItem key={usuario.id} value={usuario.id}>{usuario.nome}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="rota"

@@ -1,12 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 // import { auth } from '@clerk/nextjs';
 
 import prismadb from '@/lib/prismadb';
 import { getUserJwt } from '@/helpers/api/jwt-util';
  
-export async function POST(
-  req: Request
-) {
+export async function POST( req: NextRequest ) {
   try {
     const user = getUserJwt(req);
     if(!user)

@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prismadb from '@/lib/prismadb';
+import { getUserJwt } from '@/helpers/api/jwt-util';
 
 export async function POST(req: NextRequest) {
+  console.log('POST function called'); // Add this line
   try {
+    const user = getUserJwt(req);
+    if(!user)
+      return new NextResponse("Usuário não autorizado", { status: 401 });
+
     const body = await req.json();
+    console.log(body);
     const { usuarioId, rotaId } = body;
 
     if (!usuarioId) {
