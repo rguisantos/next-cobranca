@@ -9,7 +9,7 @@ import { DropdownMenuUser } from "./dropdown-menu-user";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from 'react';
 
-export const Navbar: React.FC = async () => {
+export const Navbar: React.FC = () => {
   const [usuario, setUsuario] = useState<{ nome: string } | null>(null);
   const router = useRouter();
   useEffect(() => {

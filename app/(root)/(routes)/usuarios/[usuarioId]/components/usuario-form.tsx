@@ -1,11 +1,10 @@
 'use client'
 
 import * as z from "zod"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
-import { Usuario } from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
@@ -30,30 +29,40 @@ const formSchema = z.object({
 
 type UsuarioFormValues = z.infer<typeof formSchema>
 
-interface UsuarioFormProps {
-  initialData: Usuario | null;
-};
 
-export const UsuarioForm: React.FC<UsuarioFormProps> = ({
-  initialData,
-}) => {
+export const UsuarioForm: React.FC = () => {
   const router = useRouter();
   const params = useParams();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [initialData, setInitialData] = useState<UsuarioFormValues>();
+
+  useEffect(() => {
+    fetchWrapper.get(`/api/usuarios/${params.usuarioId}`).then(data => {
+      setInitialData(data);
+    })
+  }, [])
 
   const title = initialData ? 'Modificar Usuario' : 'Adicionar Usuario';
   const description = initialData ? 'Modificar um Usuário.' : 'Adicionar um novo Usuário';
   const toastMessage = initialData ? 'Usuario atualizado.' : 'Usuario adicionado.';
   const action = initialData ? 'Salvar alterações' : 'Adicionar';
 
-  const defaultValues = initialData ? {
-    ...initialData,
-    } : {};
-    const form = useForm<UsuarioFormValues>({
-        resolver: zodResolver(formSchema),
-        defaultValues
-      });
+  const defaultValues = initialData || {
+    nome: '',
+    senha: ''
+  };
+  const form = useForm<UsuarioFormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues
+  });
+  
+  useEffect(() => {
+    if (initialData) {
+      form.setValue("nome",initialData.nome);
+    }
+  }, [initialData]);
 
   const onSubmit = async (data: UsuarioFormValues) => {
     try {
