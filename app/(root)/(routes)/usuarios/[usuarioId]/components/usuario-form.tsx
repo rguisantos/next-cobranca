@@ -44,9 +44,10 @@ export const UsuarioForm: React.FC = () => {
   const [rotas, setRotas] = useState<{ id: string, nome: string, checked: boolean }[]>();
 
   useEffect(() => {
-    fetchWrapper.get(`/api/usuarios/${params.usuarioId}`).then(dataUsuarios => {
-      setInitialData(dataUsuarios);
-    })
+    if(params.usuarioId!=="new")
+      fetchWrapper.get(`/api/usuarios/${params.usuarioId}`).then(dataUsuarios => {
+        setInitialData(dataUsuarios);
+      })
   }, []);
 
   useEffect(()=>{
@@ -54,7 +55,7 @@ export const UsuarioForm: React.FC = () => {
       setRotas([...dataRotas.map((item:any)=>{
         return {
           ...item,
-          checked:initialData?.acessosNaRota.map(acesso => acesso.rotaId).includes(item.id)
+          checked: initialData && initialData.acessosNaRota?.map(acesso => acesso.rotaId).includes(item.id)
         }
       })]);
     })
@@ -76,7 +77,6 @@ export const UsuarioForm: React.FC = () => {
   }, [initialData]);
 
   const onSubmit = async (data: any) => {
-    console.log(rotas);
     try {
       setLoading(true);
       var id = params.usuarioId as string;
