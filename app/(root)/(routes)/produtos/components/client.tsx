@@ -19,7 +19,16 @@ export const Client: React.FC = () => {
 
   useEffect(() => {
     fetchWrapper.get('/api/produtos').then(data => {
-      setList(data);
+      setList(data.map((item: any) =>  {
+        return {
+          id: item.id,
+          plaqueta: item.plaqueta,
+          tipoProduto: item.tipoProduto.nome,
+          contadorRelogio: item.contadorRelogio,
+          tamanhoProduto: item.tamanhoProduto.medida,
+          corProduto: item.corProduto.nome,
+        }
+      }));
       setLoading(false);
     })
   }, []);
