@@ -1,14 +1,12 @@
 'use client'
 
 import * as z from "zod"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import { CorProduto } from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
-
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,18 +28,21 @@ const formSchema = z.object({
 
 type CorProdutoFormValues = z.infer<typeof formSchema>
 
-interface CorProdutoFormProps {
-  initialData: CorProduto | null;
-};
+export const CorProdutoForm: React.FC = () => {
 
-export const CorProdutoForm: React.FC<CorProdutoFormProps> = ({
-  initialData
-}) => {
   const params = useParams();
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [initialData, setInitialData] = useState<CorProdutoFormValues>();
+
+  useEffect(() => {
+    fetchWrapper.get(`/api/corprodutos/${params.corprodutoId}`).then(data => {
+      setInitialData(data);
+    })
+  }, [])
 
   const title = initialData ? 'Modificar Cor de produto' : 'Adicionar Cor de produto';
   const description = initialData ? 'Modificar uma Cor de produto.' : 'Adicionar uma nova Cor de produto';
@@ -50,9 +51,6 @@ export const CorProdutoForm: React.FC<CorProdutoFormProps> = ({
 
   const form = useForm<CorProdutoFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      nome: '',
-    }
   });
 
   const onSubmit = async (data: CorProdutoFormValues) => {

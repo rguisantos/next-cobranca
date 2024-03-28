@@ -1,14 +1,12 @@
 'use client'
 
 import * as z from "zod"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import { TamanhoProduto } from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
-
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,18 +28,21 @@ const formSchema = z.object({
 
 type TamanhoProdutoFormValues = z.infer<typeof formSchema>
 
-interface TamanhoProdutoFormProps {
-  initialData: TamanhoProduto | null;
-};
+export const TamanhoProdutoForm: React.FC = () => {
 
-export const TamanhoProdutoForm: React.FC<TamanhoProdutoFormProps> = ({
-  initialData
-}) => {
   const params = useParams();
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [initialData, setInitialData] = useState<TamanhoProdutoFormValues>();
+
+  useEffect(() => {
+    fetchWrapper.get(`/api/tamanhoprodutos/${params.tamanhoprodutoId}`).then(data => {
+      setInitialData(data);
+    })
+  }, [])
 
   const title = initialData ? 'Modificar Tamanho de produto' : 'Adicionar Tamanho de produto';
   const description = initialData ? 'Modificar um Tamanho de produto.' : 'Adicionar um novo Tamanho de produto';
@@ -50,10 +51,13 @@ export const TamanhoProdutoForm: React.FC<TamanhoProdutoFormProps> = ({
 
   const form = useForm<TamanhoProdutoFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      medida: '',
-    }
   });
+
+  useEffect(() => {
+    if (initialData) {
+      form.setValue("medida",initialData.medida);
+    }
+  }, [initialData]);
 
   const onSubmit = async (data: TamanhoProdutoFormValues) => {
     try {

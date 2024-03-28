@@ -1,11 +1,10 @@
 'use client'
 
 import * as z from "zod"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
-import { Rota } from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
@@ -29,17 +28,20 @@ const formSchema = z.object({
 
 type RotaFormValues = z.infer<typeof formSchema>
 
-interface RotaFormProps {
-  initialData: Rota | null;
-};
+export const RotaForm: React.FC = () => {
 
-export const RotaForm: React.FC<RotaFormProps> = ({
-  initialData,
-}) => {
   const router = useRouter();
   const params = useParams();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [initialData, setInitialData] = useState<RotaFormValues>();
+
+  useEffect(() => {
+    fetchWrapper.get(`/api/rotas/${params.rotaId}`).then(data => {
+      setInitialData(data);
+    })
+  }, [])
 
   const title = initialData ? 'Modificar Rota' : 'Adicionar Rota';
   const description = initialData ? 'Modificar uma Rota.' : 'Adicionar uma nova Rota';
@@ -51,8 +53,13 @@ export const RotaForm: React.FC<RotaFormProps> = ({
   } : {};
   const form = useForm<RotaFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues
   });
+
+  useEffect(() => {
+    if (initialData) {
+      form.setValue("nome",initialData.nome);
+    }
+  }, [initialData]);
 
   const onSubmit = async (data: RotaFormValues) => {
     try {

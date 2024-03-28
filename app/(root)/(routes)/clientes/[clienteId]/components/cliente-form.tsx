@@ -1,11 +1,10 @@
 'use client'
 
 import * as z from "zod"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
-import { Cliente } from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
@@ -36,18 +35,20 @@ const formSchema = z.object({
 
 type ClienteFormValues = z.infer<typeof formSchema>
 
-interface ClienteFormProps {
-  initialData: Cliente | null;
-};
-
-export const ClienteForm: React.FC<ClienteFormProps> = ({
-  initialData,
-}) => {
+export const ClienteForm: React.FC = () => {
   const params = useParams();
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [initialData, setInitialData] = useState<ClienteFormValues>();
+
+  useEffect(() => {
+    fetchWrapper.get(`/api/clientes/${params.clienteId}`).then(data => {
+      setInitialData(data);
+    })
+  }, [])
 
   const title = initialData ? 'Modificar Cliente' : 'Adicionar Cliente';
   const description = initialData ? 'Modificar um Cliente.' : 'Adicionar um novo Cliente';
@@ -59,8 +60,20 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
     } : {};
     const form = useForm<ClienteFormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues
       });
+
+
+  useEffect(() => {
+    if (initialData) {
+      form.setValue("nome",initialData.nome);
+      form.setValue("cpf",initialData.cpf);
+      form.setValue("rg",initialData.rg);
+      form.setValue("telefone",initialData.telefone);
+      form.setValue("endereco",initialData.endereco);
+      form.setValue("cidade",initialData.cidade);
+      form.setValue("estado",initialData.estado);
+    }
+  }, [initialData]);
 
   const onSubmit = async (data: ClienteFormValues) => {
     try {
@@ -117,7 +130,7 @@ export const ClienteForm: React.FC<ClienteFormProps> = ({
         )}
       </div>
       <Separator />
-      <Form {...form}>
+      <Form {...form} >
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="md:grid md:grid-cols-3 gap-8">
             <FormField

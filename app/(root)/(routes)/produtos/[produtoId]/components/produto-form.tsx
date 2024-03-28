@@ -1,7 +1,7 @@
 'use client'
 
 import * as z from "zod"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
@@ -34,24 +34,34 @@ const formSchema = z.object({
 
 type ProdutoFormValues = z.infer<typeof formSchema>
 
-interface ProdutoFormProps {
-  initialData: Produto | null;
-  tiposProdutos: TipoProduto[];
-  tamanhoProdutos: TamanhoProduto[];
-  corProdutos: CorProduto[];
-};
+export const ProdutoForm: React.FC = () => {
 
-export const ProdutoForm: React.FC<ProdutoFormProps> = ({
-  initialData,
-  tiposProdutos,
-  tamanhoProdutos,
-  corProdutos,
-}) => {
   const params = useParams();
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [tiposProdutos, setTiposProdutos] = useState<TipoProduto[]>([]);
+  const [tamanhoProdutos, setTamanhoProdutos] = useState<TamanhoProduto[]>([]);
+  const [corProdutos, setCorProdutos] = useState<CorProduto[]>([]);
+  const [initialData, setInitialData] = useState<ProdutoFormValues>();
+
+
+  useEffect(() => {
+    fetchWrapper.get(`/api/produtos/${params.produtoId}`).then(data => {
+      setInitialData(data);
+    })
+    fetchWrapper.get('/api/tipoprodutos').then(data => {
+      setTiposProdutos(data);
+    })
+    fetchWrapper.get('/api/tamanhoprodutos').then(data => {
+      setTamanhoProdutos(data);
+    })
+    fetchWrapper.get('/api/corprodutos').then(data => {
+      setCorProdutos(data);
+    })
+  }, [])
+
 
   const title = initialData ? 'Modificar Produto' : 'Adicionar Produto';
   const description = initialData ? 'Modificar um Produto.' : 'Adicionar um novo Produto';
@@ -72,8 +82,17 @@ export const ProdutoForm: React.FC<ProdutoFormProps> = ({
 
   const form = useForm<ProdutoFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues
   });
+
+  useEffect(() => {
+    if (initialData) {
+      form.setValue('plaqueta', initialData.plaqueta);
+      form.setValue('tipoProdutoId', initialData.tipoProdutoId);
+      form.setValue('contadorRelogio', initialData.contadorRelogio);
+      form.setValue('tamanhoProdutoId', initialData.tamanhoProdutoId);
+      form.setValue('corProdutoId', initialData.corProdutoId);
+    }
+  }, [initialData]);
 
   const onSubmit = async (data: ProdutoFormValues) => {
     try {

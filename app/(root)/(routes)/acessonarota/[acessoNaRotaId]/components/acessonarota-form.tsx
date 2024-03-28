@@ -1,8 +1,7 @@
 'use client'
 
 import * as z from "zod"
-
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
@@ -30,22 +29,28 @@ const formSchema = z.object({
 
 type AcessoNaRotaFormValues = z.infer<typeof formSchema>
 
-interface AcessoNaRotaFormProps {
-  initialData: AcessoNaRota | null;
-  usuarios: Usuario[];
-  rotas: Rota[];
-};
-
-export const AcessoNaRotaForm: React.FC<AcessoNaRotaFormProps> = ({
-  initialData,
-  usuarios,
-  rotas,
-}) => {
+export const AcessoNaRotaForm: React.FC = () => {
   const params = useParams();
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [rotas, setRotas] = useState<Rota[]>([]);
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+
+  const [initialData, setInitialData] = useState<AcessoNaRotaFormValues>();
+
+  useEffect(() => {
+    fetchWrapper.get('/api/rotas').then(data => {
+      setRotas(data);
+    })
+    fetchWrapper.get('/api/usuarios').then(data => {
+      setUsuarios(data);
+    })
+    fetchWrapper.get(`/api/acessonarota/${params.acessoNaRotaId}`).then(data => {
+      setInitialData(data);
+    })
+  }, [])
 
   const title = initialData ? 'Modificar Acessos' : 'Adicionar Acesso a Rota';
   const description = initialData ? 'Modificar um Acesso.' : 'Adicionar um Novo Acesso';
@@ -63,8 +68,13 @@ export const AcessoNaRotaForm: React.FC<AcessoNaRotaFormProps> = ({
 
   const form = useForm<AcessoNaRotaFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues
   });
+  useEffect(() => {
+    if (initialData) {
+      form.setValue("rotaId", initialData.rotaId);
+      form.setValue("usuarioId", initialData.usuarioId);
+    }
+  }, [initialData]);
 
   const onSubmit = async (data: AcessoNaRotaFormValues) => {
     try {
