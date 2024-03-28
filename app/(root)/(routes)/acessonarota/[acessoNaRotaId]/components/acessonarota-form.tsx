@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
-import { AcessoNaRota, Usuario, Rota } from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 import { Trash } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -35,8 +34,8 @@ export const AcessoNaRotaForm: React.FC = () => {
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [rotas, setRotas] = useState<Rota[]>([]);
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [rotas, setRotas] = useState<{id:string, nome:string}[]>([]);
+  const [usuarios, setUsuarios] = useState<{id:string, nome:string}[]>([]);
 
   const [initialData, setInitialData] = useState<AcessoNaRotaFormValues>();
 

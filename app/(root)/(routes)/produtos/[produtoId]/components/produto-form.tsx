@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
-import { Produto, TipoProduto, TamanhoProduto, CorProduto } from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
 import { Heading } from "@/components/ui/heading"
@@ -41,9 +40,9 @@ export const ProdutoForm: React.FC = () => {
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [tiposProdutos, setTiposProdutos] = useState<TipoProduto[]>([]);
-  const [tamanhoProdutos, setTamanhoProdutos] = useState<TamanhoProduto[]>([]);
-  const [corProdutos, setCorProdutos] = useState<CorProduto[]>([]);
+  const [tiposProdutos, setTiposProdutos] = useState<{id:string, nome:string}[]>([]);
+  const [tamanhoProdutos, setTamanhoProdutos] = useState<{id:string, medida:string}[]>([]);
+  const [corProdutos, setCorProdutos] = useState<{id:string, nome:string}[]>([]);
   const [initialData, setInitialData] = useState<ProdutoFormValues>();
 
 
