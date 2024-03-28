@@ -71,7 +71,7 @@ export async function PATCH(
 
     const body = await req.json();
     
-    const { nome } = body;
+    const { nome, rotas } = body;
 
     if (!nome) {
       return new NextResponse("Nome é obrigatório", { status: 400 });
@@ -81,11 +81,29 @@ export async function PATCH(
       return new NextResponse("UsuarioId é obrigatório", { status: 400 });
     }
 
+    await prismadb.acessoNaRota.deleteMany({
+      where:{
+        usuarioId:params.usuarioId
+      }
+    })
+
     const usuario = await prismadb.usuario.update({
       where: {
         id: params.usuarioId,
       },
-      data: { nome }
+      include:{
+        acessosNaRota:true
+      },
+      data: { 
+        nome,
+        acessosNaRota:{
+          create:[...rotas.map((rota:any)=>{
+            return { 
+              rotaId:rota.id 
+            }
+          })]
+        }
+      }
     });
   
     return NextResponse.json(usuario);

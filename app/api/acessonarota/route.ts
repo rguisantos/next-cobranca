@@ -37,7 +37,12 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    const acessosNaRota = await prismadb.acessoNaRota.findMany();
+    const acessosNaRota = await prismadb.acessoNaRota.findMany({
+      include:{
+        rota:true,
+        usuario:true
+      }
+    });
     return NextResponse.json(acessosNaRota);
   } catch (error) {
     console.log('[ACESSONAROTA_GET]', error);

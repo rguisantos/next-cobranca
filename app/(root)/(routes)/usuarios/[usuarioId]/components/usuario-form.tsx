@@ -18,9 +18,13 @@ import {
   FormLabel,
   FormField,
   FormItem,
-  FormMessage
+  FormMessage,
+  FormDescription
 } from "@/components/ui/form"
 import { fetchWrapper } from "@/helpers/fetch-wrapper"
+import { Switch } from "@/components/ui/switch"
+import { RadioGroup } from "@/components/ui/radio-group"
+import { Checkbox } from "@/components/ui/checkbox"
 
 const formSchema = z.object({
   nome: z.string().min(1),
@@ -36,42 +40,52 @@ export const UsuarioForm: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [initialData, setInitialData] = useState<UsuarioFormValues>();
+  const [initialData, setInitialData] = useState<{ id: string, nome: string, acessosNaRota: { usuarioId:string, rotaId: string }[] }>();
+  const [rotas, setRotas] = useState<{ id: string, nome: string, checked: boolean }[]>();
 
   useEffect(() => {
-    fetchWrapper.get(`/api/usuarios/${params.usuarioId}`).then(data => {
-      setInitialData(data);
+    fetchWrapper.get(`/api/usuarios/${params.usuarioId}`).then(dataUsuarios => {
+      setInitialData(dataUsuarios);
     })
-  }, [])
+  }, []);
+
+  useEffect(()=>{
+    fetchWrapper.get(`/api/rotas`).then(dataRotas => {
+      setRotas([...dataRotas.map((item:any)=>{
+        return {
+          ...item,
+          checked:initialData?.acessosNaRota.map(acesso => acesso.rotaId).includes(item.id)
+        }
+      })]);
+    })
+  },[initialData])
 
   const title = initialData ? 'Modificar Usuario' : 'Adicionar Usuario';
   const description = initialData ? 'Modificar um Usuário.' : 'Adicionar um novo Usuário';
   const toastMessage = initialData ? 'Usuario atualizado.' : 'Usuario adicionado.';
   const action = initialData ? 'Salvar alterações' : 'Adicionar';
 
-  const defaultValues = initialData || {
-    nome: '',
-    senha: ''
-  };
   const form = useForm<UsuarioFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues
   });
-  
+
   useEffect(() => {
     if (initialData) {
-      form.setValue("nome",initialData.nome);
+      form.setValue("nome", initialData.nome);
     }
   }, [initialData]);
 
-  const onSubmit = async (data: UsuarioFormValues) => {
+  const onSubmit = async (data: any) => {
+    console.log(rotas);
     try {
       setLoading(true);
+      var id = params.usuarioId as string;
       if (initialData) {
-        await fetchWrapper.patch(`/api/usuarios/${params.usuarioId}`, data);
+        await fetchWrapper.patch(`/api/usuarios/${id}`, {...data, rotas: rotas?.filter(x=>x.checked)});
       } else {
-        await fetchWrapper.post(`/api/usuarios`, data);
+        id = (await fetchWrapper.post(`/api/usuarios`, {...data, rotas: rotas?.filter(x=>x.checked)})).id;
       }
+
       router.refresh();
       router.push(`/usuarios`);
       toast.success(toastMessage);
@@ -147,6 +161,35 @@ export const UsuarioForm: React.FC = () => {
                 </FormItem>
               )}
             />
+            <RadioGroup>
+              Rotas:
+              {rotas?.map((rota,i) => {
+                return (
+                  <div key={i} className="flex items-center space-x-2">
+                    <FormControl>
+                      <Switch key={i} 
+                        id={rota.id}
+                        checked={rota.checked}
+                        onCheckedChange={(checked) => {
+                              setRotas(rotas.map((x)=>{
+                                if(x.id===rota.id)
+                                  x.checked=checked
+                                return x;
+                              }
+                            ));
+                          }
+                        }
+                      />
+                    </FormControl>
+                    <div className="space-y-0.5">
+                      <FormLabel htmlFor={rota.id} className="text-base">
+                        {rota.nome}
+                      </FormLabel>
+                    </div>
+                  </div>
+                )
+              })}
+            </RadioGroup>
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

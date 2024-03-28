@@ -81,7 +81,9 @@ export async function PATCH(
       where: {
         id: params.rotaId,
       },
-      data: { nome }
+      data: { 
+        nome
+      }
     });
   
     return NextResponse.json(rota);

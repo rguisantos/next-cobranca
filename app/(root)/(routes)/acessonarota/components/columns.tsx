@@ -8,20 +8,18 @@ export type Column = {
   id: string;
   usuarioId: string;
   rotaId: string;
+  usuario: string;
+  rota: string;
 }
 
 export const columns: ColumnDef<Column>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: "usuario",
+    header: "Usuário",
   },
   {
-    accessorKey: "usuarioId",
-    header: "ID do Usuário",
-  },
-  {
-    accessorKey: "rotaId",
-    header: "ID da Rota",
+    accessorKey: "rota",
+    header: "Rota",
   },
   {
     id: "actions",

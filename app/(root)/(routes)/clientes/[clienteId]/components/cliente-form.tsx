@@ -78,11 +78,14 @@ export const ClienteForm: React.FC = () => {
   const onSubmit = async (data: ClienteFormValues) => {
     try {
       setLoading(true);
+      var id = params.clienteId as string;
       if (initialData) {
-        await fetchWrapper.patch(`/api/clientes/${params.clienteId}`, data);
+        await fetchWrapper.patch(`/api/clientes/${id}`, data);
       } else {
-        await fetchWrapper.post(`/api/clientes`, data);
+        id = (await fetchWrapper.post(`/api/clientes`, data)).id;
       }
+
+      
       router.refresh();
       router.push(`/clientes`);
       toast.success(toastMessage);

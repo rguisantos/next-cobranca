@@ -15,7 +15,7 @@ export async function POST(
 
     const body = await req.json();
 
-    const { nome } = body;
+    const { nome, rotas } = body;
 
     if (!nome) {
       return new NextResponse("Nome é obrigatório", { status: 400 });
@@ -26,7 +26,15 @@ export async function POST(
     const usuario = await prismadb.usuario.create({
       data: {
         nome,
-        senha: senhaCriptografada
+        senha: senhaCriptografada,
+        acessosNaRota:{
+          create:[...rotas.map((rota:any)=>{
+            return { rotaId:rota.id }
+          })]
+        }
+      },
+      include:{
+        acessosNaRota:true
       }
     });
   

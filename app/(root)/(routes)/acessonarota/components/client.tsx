@@ -17,7 +17,14 @@ export const Client: React.FC = () => {
 
   useEffect(() =>{
     fetchWrapper.get('/api/acessonarota').then(data =>{
-      setList(data);
+      setList(data.map((item:any) => {
+        return {
+          ...item,
+          rota: item.rota.nome,
+          usuario: item.usuario.nome
+        }
+      }
+        ));
       setLoading(false);
     })
   },[]);
@@ -25,8 +32,10 @@ export const Client: React.FC = () => {
   const formattedList: Column[] = list.map(item => ({
     ...item,
     id: item.id,
-    rota: item.rotaId,
-    cliente: item.usuarioId,
+    rotaId: item.rotaId,
+    usuarioId: item.usuarioId,
+    rota: item.rota,
+    usuario: item.usuario,
   }));
 
   const router = useRouter();
