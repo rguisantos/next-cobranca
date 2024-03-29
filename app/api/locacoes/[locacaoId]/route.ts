@@ -15,17 +15,21 @@ export async function GET(
     const Locacao = await prismadb.locacao.findUnique({
       where: {
         id: params.locacaoId
-
       },
       include: {
-        clienteId: true,
-        rotaId: true,
+        cliente: true,
+        produto: {
+          include: {
+            tipoProduto:true
+          }
+        },
+        rota: true,
       }
     });
   
     return NextResponse.json(Locacao);
   } catch (error) {
-    console.log('[Locação_GET]', error);
+    console.log('[LOCACAO_GET]', error);
     return new NextResponse("Erro Interno do servidor", { status: 500 });
   }
 };
@@ -53,7 +57,7 @@ export async function DELETE(
   
     return NextResponse.json(Locacao);
   } catch (error) {
-    console.log('[Locacao_DELETE]', error);
+    console.log('[LOCACAO_DELETE]', error);
     return new NextResponse("Erro Interno do servidor", { status: 500 });
   }
 };
@@ -72,21 +76,30 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const { plaqueta, cliente, rota } = body;
+    const { 
+      produtoId, 
+      clienteId, 
+      rotaId,
+      ehTipoLocacaoMensal,
+      valorMensal,
+      porcentagemEmpresa,
+      valorFicha,
+      valorSaldoDevedor
+    } = body;
 
     if (!params.locacaoId) {
       return new NextResponse("Id da Locação é obrigatória", { status: 400 });
     }
 
-    if (!plaqueta) {
+    if (!produtoId) {
       return new NextResponse("Plaqueta é obrigatória", { status: 400 });
     }
 
-    if (!cliente) {
+    if (!clienteId) {
       return new NextResponse("O Cliente é obrigatório", { status: 400 });
     }
 
-    if (!rota) {
+    if (!rotaId) {
       return new NextResponse("A Rota é obrigatória", { status: 400 });
     }
 
@@ -95,15 +108,20 @@ export async function PATCH(
         id: params.locacaoId
       },
       data: {
-        plaqueta,
-        clienteId: cliente,
-        rotaId: rota,
+        produtoId,
+        clienteId,
+        rotaId,
+        ehTipoLocacaoMensal,
+        valorMensal,
+        porcentagemEmpresa,
+        valorFicha,
+        valorSaldoDevedor
       },
     });
   
     return NextResponse.json(locacao);
   } catch (error) {
-    console.log('[Locação_PATCH]', error);
+    console.log('[LOCACAO_PATCH]', error);
     return new NextResponse("Erro Interno do servidor", { status: 500 });
   }
 };

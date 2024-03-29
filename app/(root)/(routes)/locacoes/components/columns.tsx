@@ -6,19 +6,15 @@ import { CellAction } from "./cell-action"
 
 export type Column = {
   id: string;
-  plaqueta: string;
+  produto: string;
   cliente: string;
   rota: string;
 }
 
 export const columns: ColumnDef<Column>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
-  },
-  {
-    accessorKey: "plaqueta",
-    header: "Plaqueta",
+    accessorKey: "produto",
+    header: "Produto",
   },
   {
     accessorKey: "cliente",
