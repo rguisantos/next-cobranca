@@ -28,16 +28,11 @@ const formSchema = z.object({
     clienteId: z.string().nonempty(),
     rotaId: z.string().nonempty(),
     ehTipoLocacaoMensal: z.boolean(),
-    valorMensal: z.preprocess((a) => parseFloat(z.string().parse(a)),
-    z.number({invalid_type_error: "Precisa ser um preço",})).optional(),
-    porcentagemEmpresa: z.preprocess((a) => parseFloat(z.string().parse(a)),
-    z.number({invalid_type_error: "Precisa ser um percentual",})).optional(),
-    porcentagemCliente: z.preprocess((a) => parseFloat(z.string().parse(a)),
-    z.number({invalid_type_error: "Precisa ser um percentual",})).optional(),
-    valorFicha: z.preprocess((a) => parseFloat(z.string().parse(a)),
-    z.number({invalid_type_error: "Precisa ser um preço",})).optional(),
-    valorSaldoDevedor: z.preprocess((a) => parseFloat(z.string().parse(a)),
-    z.number({invalid_type_error: "Precisa ser um preço",})).optional(),
+    valorMensal: z.number(),
+    porcentagemEmpresa: z.number(),
+    porcentagemCliente: z.number(),
+    valorFicha: z.number(),
+    valorSaldoDevedor: z.number(),
 });
 
 type LocacaoFormValues = z.infer<typeof formSchema>
@@ -54,7 +49,7 @@ export const LocacaoForm: React.FC = () => {
     const [initialData, setInitialData] = useState<LocacaoFormValues>();
 
 
-    const [tipoLocacaoMensal, setTipoLocacaoMensal] = useState(false);
+    const [tipoLocacaoMensal, setTipoLocacaoMensal] = useState<boolean>();
 
     useEffect(() => {
         fetchWrapper.get(`/api/locacoes/${params.locacaoId}`).then(data => {
@@ -78,6 +73,13 @@ export const LocacaoForm: React.FC = () => {
 
     const form = useForm<LocacaoFormValues>({
         resolver: zodResolver(formSchema),
+        defaultValues:{
+            porcentagemCliente:0,
+            porcentagemEmpresa:0,
+            valorFicha:0,
+            valorMensal: 0,
+            valorSaldoDevedor: 0,
+        }
     });
 
     useEffect(() => {
@@ -93,14 +95,6 @@ export const LocacaoForm: React.FC = () => {
             form.setValue('valorSaldoDevedor', initialData.valorSaldoDevedor??0);
         }
     }, [initialData]);
-
-    // Watch the value of porcentagemEmpresa and set porcentagemCliente accordingly
-    const porcentagemEmpresa = form.watch('porcentagemEmpresa');
-    useEffect(() => {
-        if (porcentagemEmpresa !== undefined) {
-            form.setValue('porcentagemCliente', 100 - porcentagemEmpresa);
-        }
-    }, [porcentagemEmpresa]);
 
     const onSubmit = async (data: LocacaoFormValues) => {
         try {
@@ -160,6 +154,10 @@ export const LocacaoForm: React.FC = () => {
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
+                    onAbortCapture={(e) => {
+                        console.log(e)
+                        console.log(form.formState)
+                    }}
                     className="space-y-8 w-full">
                     <div className="md:grid md:grid-cols-3 gap-8">
                         <FormField
@@ -260,49 +258,63 @@ export const LocacaoForm: React.FC = () => {
                                 </FormItem>
                             )}
                         />
-                        {tipoLocacaoMensal && <FormField
+                        {tipoLocacaoMensal === true && <FormField
                             control={form.control}
                             name="valorMensal"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel htmlFor="valorMensal">Valor Mensal</FormLabel>
-                                    <Input {...field} type="number" />
+                                    <Input {...field}
+                                    onChange={(e) => {
+                                        field.onChange(parseFloat(e.target.value))
+                                    }}
+                                    type="number" />
                                     <FormMessage>{form.formState.errors.valorMensal?.message}</FormMessage>
                                 </FormItem>
                             )}
                         />
                         }
-                        {!tipoLocacaoMensal && <FormField
+                        {tipoLocacaoMensal === false && <FormField
                             control={form.control}
                             name="porcentagemEmpresa"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel htmlFor="porcentagemEmpresa">Porcentagem Empresa</FormLabel>
-                                    <Input {...field} type="number" />
+                                    <Input {...field} onChange={(e) => {
+                                        field.onChange(parseFloat(e.target.value));
+                                        form.setValue('porcentagemCliente', 100 - parseFloat(e.target.value));
+                                    }} type="number" />
                                     <FormMessage>{form.formState.errors.porcentagemEmpresa?.message}</FormMessage>
                                 </FormItem>
                             )}
                         />
                         }
-                        {!tipoLocacaoMensal && <FormField
+                        {tipoLocacaoMensal === false && <FormField
                             control={form.control}
                             name="porcentagemCliente"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel htmlFor="porcentagemCliente">Porcentagem Cliente</FormLabel>
-                                    <Input {...field} type="number" />
+                                    <Input {...field} onChange={(e) => {
+                                        field.onChange(parseFloat(e.target.value));
+                                        form.setValue('porcentagemEmpresa', 100 - parseFloat(e.target.value));
+                                    }} type="number" />
                                     <FormMessage>{form.formState.errors.porcentagemCliente?.message}</FormMessage>
                                 </FormItem>
                             )}
                         />
                         }
-                        {!tipoLocacaoMensal && <FormField
+                        {tipoLocacaoMensal === false && <FormField
                             control={form.control}
                             name="valorFicha"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel htmlFor="valorFicha">Valor Ficha</FormLabel>
-                                    <Input {...field} type="number" />
+                                    <Input {...field}
+                                    onChange={(e) => {
+                                        field.onChange(parseFloat(e.target.value))
+                                    }}
+                                    type="number" />
                                     <FormMessage>{form.formState.errors.valorFicha?.message}</FormMessage>
                                 </FormItem>
                             )}
@@ -314,7 +326,11 @@ export const LocacaoForm: React.FC = () => {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel htmlFor="valorSaldoDevedor">Valor Saldo Devedor</FormLabel>
-                                    <Input {...field} type="number" />
+                                    <Input {...field}
+                                    onChange={(e) => {
+                                        field.onChange(parseFloat(e.target.value))
+                                    }}
+                                    type="number" />
                                     <FormMessage>{form.formState.errors.valorSaldoDevedor?.message}</FormMessage>
                                 </FormItem>
                             )}
