@@ -49,7 +49,7 @@ export const Client: React.FC = () => {
         </Button>
       </div>
       <Separator />
-      {!loading && <DataTable searchKey="id" columns={columns} data={formattedList} />}
+      {!loading && <DataTable searchKey="usuario" columns={columns} data={formattedList} />}
     </>
   );
 };
