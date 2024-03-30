@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { fetchWrapper } from "@/helpers/fetch-wrapper"
+import { PagamentosClient } from "./pagamentos-client"
 
 const formSchema = z.object({
   plaqueta: z.coerce.number().min(1),
@@ -29,6 +30,7 @@ const formSchema = z.object({
   contadorRelogio: z.coerce.number().min(1),
   tamanhoProdutoId: z.string().min(1),
   corProdutoId: z.string().min(1),
+  maquinaId: z.string().optional(),
 });
 
 type ProdutoFormValues = z.infer<typeof formSchema>
@@ -44,6 +46,17 @@ export const ProdutoForm: React.FC = () => {
   const [tamanhoProdutos, setTamanhoProdutos] = useState<{id:string, medida:string}[]>([]);
   const [corProdutos, setCorProdutos] = useState<{id:string, nome:string}[]>([]);
   const [initialData, setInitialData] = useState<ProdutoFormValues>();
+
+  const [pagamentos, setPagamentos] = useState<{
+      total: number,
+      estornos: number,
+      pagamentos: {
+        id:string,
+        valor:number,
+        data:Date,
+        estornado:boolean
+      }[]
+  }>();
 
 
   useEffect(() => {
@@ -67,18 +80,6 @@ export const ProdutoForm: React.FC = () => {
   const toastMessage = initialData ? 'Produto atualizado.' : 'Produto adicionado.';
   const action = initialData ? 'Salvar alterações' : 'Adicionar';
 
-  const defaultValues = initialData ? {
-    ...initialData,
-    plaqueta: parseFloat(String(initialData?.plaqueta)),
-    contadorRelogio: parseFloat(String(initialData?.contadorRelogio)),
-  } : {
-    plaqueta: 0,
-    tipoProdutoId: '',
-    contadorRelogio: 0,
-    tamanhoProdutoId: '',
-    corProdutoId: '',
-  }
-
   const form = useForm<ProdutoFormValues>({
     resolver: zodResolver(formSchema),
   });
@@ -90,6 +91,10 @@ export const ProdutoForm: React.FC = () => {
       form.setValue('contadorRelogio', initialData.contadorRelogio);
       form.setValue('tamanhoProdutoId', initialData.tamanhoProdutoId);
       form.setValue('corProdutoId', initialData.corProdutoId);
+      form.setValue('maquinaId', initialData.maquinaId);
+      fetchWrapper.get(`/api/pagamentos/${params.produtoId}`).then(data => {
+        setPagamentos(data);
+      })
     }
   }, [initialData]);
 
@@ -188,6 +193,19 @@ export const ProdutoForm: React.FC = () => {
             />
             <FormField
               control={form.control}
+              name="maquinaId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Maquina ID Pix</FormLabel>
+                  <FormControl>
+                    <Input type="text" disabled={loading} placeholder="Maquina ID Pix do Produto" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="contadorRelogio"
               render={({ field }) => (
                 <FormItem>
@@ -249,6 +267,8 @@ export const ProdutoForm: React.FC = () => {
           </Button>
         </form>
       </Form>
+      <Separator />
+      {pagamentos && <PagamentosClient {...pagamentos} />}
     </>
   );
 };

@@ -22,7 +22,7 @@ export async function GET(
         corProduto: true,
       }
     });
-  
+
     return NextResponse.json(Produto);
   } catch (error) {
     console.log('[Produto_GET]', error);
@@ -50,7 +50,7 @@ export async function DELETE(
         id: params.produtoId
       },
     });
-  
+
     return NextResponse.json(Produto);
   } catch (error) {
     console.log('[Produto_DELETE]', error);
@@ -72,7 +72,13 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const { tipoProdutoId, plaqueta, contadorRelogio, tamanhoProdutoId, corProdutoId } = body;
+    const { tipoProdutoId,
+      plaqueta,
+      contadorRelogio,
+      tamanhoProdutoId,
+      corProdutoId,
+      maquinaId 
+    } = body;
 
     if (!params.produtoId) {
       return new NextResponse("Id do Produto é obrigatória", { status: 400 });
@@ -108,9 +114,10 @@ export async function PATCH(
         contadorRelogio,
         tamanhoProdutoId,
         corProdutoId,
+        maquinaId
       },
     });
-  
+
     return NextResponse.json(produto);
   } catch (error) {
     console.log('[Produto_PATCH]', error);

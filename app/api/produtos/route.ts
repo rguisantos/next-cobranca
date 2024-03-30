@@ -15,7 +15,7 @@ export async function POST(
 
     const body = await req.json();
 
-    const { tipoProdutoId, plaqueta, contadorRelogio, tamanhoProdutoId, corProdutoId } = body;
+    const { tipoProdutoId, plaqueta, contadorRelogio, tamanhoProdutoId, corProdutoId, maquinaId } = body;
 
     if (!plaqueta) {
       return new NextResponse("Plaqueta é obrigatório", { status: 400 });
@@ -44,6 +44,7 @@ export async function POST(
         contadorRelogio,
         tamanhoProdutoId,
         corProdutoId,
+        maquinaId,
       },
     });
   

@@ -52,6 +52,7 @@ model Produto {
   corProduto       CorProduto     @relation("CorProdutoComProduto", fields: [corProdutoId], references: [id])
   tamanhoProduto   TamanhoProduto @relation("TamanhoProdutoComProduto", fields: [tamanhoProdutoId], references: [id])
   locacoes         Locacao[]      @relation("ProdutoComLocacao")
+  maquinaId        String         @default("")
 
   @@index([tipoProdutoId])
   @@index([tamanhoProdutoId])
@@ -111,6 +112,13 @@ model Usuario {
   nome          String
   senha         String
   acessosNaRota AcessoNaRota[] @relation("UsuarioComAcessoNaRota")
+}
+model Configuracao {
+  id            String         @id @default(uuid())
+  chave          String
+  valor         String
+  
+  @@index([chave])
 }
 
 model AcessoNaRota {
