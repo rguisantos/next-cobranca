@@ -16,7 +16,7 @@ export const Client: React.FC = () => {
   const [list, setList] = useState([] as Column[]);
 
   useEffect(() =>{
-    fetchWrapper.get('/api/clientes').then(data =>{
+    fetchWrapper.get('/api/tamanhoprodutos').then(data =>{
       setList(data);
       setLoading(false);
     })
@@ -30,7 +30,7 @@ export const Client: React.FC = () => {
 
   const formattedList: Column[] = list.map(item => ({
     id: item.id,
-    nome: item.nome, // Add the missing 'medida' property
+    medida: item.medida, // Add the missing 'medida' property
   }));
 
   const router = useRouter();
