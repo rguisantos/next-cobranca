@@ -15,7 +15,7 @@ import { columns, Column } from "./columns";
 
 export const Client: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [list, setList] = useState([] as Column[]);
+  const [list, setList] = useState<Column[]>([]);
 
   useEffect(() => {
     fetchWrapper.get('/api/produtos').then(data => {
@@ -69,8 +69,8 @@ export const Client: React.FC = () => {
         <nav
           className="flex gap-4"
         >
-          {routes.map((route) => (
-            <Button>
+          {routes.map((route, i) => (
+            <Button key={i}>
               <Link
                 key={route.href}
                 href={route.href}
