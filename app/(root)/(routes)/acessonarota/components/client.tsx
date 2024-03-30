@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { columns, Column } from "./columns";
 import { useEffect, useState } from "react";
 import { fetchWrapper } from "@/helpers/fetch-wrapper";
+import Loading from "../loading";
 
 export const Client: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -28,6 +29,11 @@ export const Client: React.FC = () => {
       setLoading(false);
     })
   },[]);
+
+  if(loading)
+    return(
+      <Loading />
+    );
 
   const formattedList: Column[] = list.map(item => ({
     ...item,

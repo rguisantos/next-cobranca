@@ -9,6 +9,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { columns, Column } from "./columns";
+import Loading from "../loading";
 
 export const Client: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,11 @@ export const Client: React.FC = () => {
       setLoading(false);
     })
   },[]);
+
+  if(loading)
+    return(
+      <Loading />
+    );
 
 
   const formattedList: Column[] = list.map(item => ({
