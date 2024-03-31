@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/form"
 import { fetchWrapper } from "@/helpers/fetch-wrapper"
 import { PagamentosClient } from "./pagamentos-client"
+import { Loader } from "@/components/ui/loader"
+import Loading from "./loading"
 
 const formSchema = z.object({
   plaqueta: z.coerce.number().min(1),
@@ -41,22 +43,22 @@ export const ProdutoForm: React.FC = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [tiposProdutos, setTiposProdutos] = useState<{id:string, nome:string}[]>([]);
-  const [tamanhoProdutos, setTamanhoProdutos] = useState<{id:string, medida:string}[]>([]);
-  const [corProdutos, setCorProdutos] = useState<{id:string, nome:string}[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [tiposProdutos, setTiposProdutos] = useState<{ id: string, nome: string }[]>([]);
+  const [tamanhoProdutos, setTamanhoProdutos] = useState<{ id: string, medida: string }[]>([]);
+  const [corProdutos, setCorProdutos] = useState<{ id: string, nome: string }[]>([]);
   const [initialData, setInitialData] = useState<ProdutoFormValues>();
 
   const [pagamentos, setPagamentos] = useState<{
-      total: number,
-      estornos: number,
-      pagamentos: {
-        id:string,
-        valor:number,
-        jaTemCobranca: boolean,
-        data:Date,
-        estornado:boolean
-      }[]
+    total: number,
+    estornos: number,
+    pagamentos: {
+      id: string,
+      valor: number,
+      jaTemCobranca: boolean,
+      data: Date,
+      estornado: boolean
+    }[]
   }>();
 
 
@@ -93,9 +95,14 @@ export const ProdutoForm: React.FC = () => {
       form.setValue('tamanhoProdutoId', initialData.tamanhoProdutoId);
       form.setValue('corProdutoId', initialData.corProdutoId);
       form.setValue('maquinaId', initialData.maquinaId);
-      fetchWrapper.get(`/api/pagamentos/${params.produtoId}`).then(data => {
-        setPagamentos(data);
-      })
+      if (initialData.maquinaId!==undefined && initialData.maquinaId!==null && initialData.maquinaId !== "") {
+        fetchWrapper.get(`/api/pagamentos/${params.produtoId}`).then(data => {
+          setPagamentos(data);
+          setLoading(false);
+        })
+        return;
+      }
+      setLoading(false);
     }
   }, [initialData]);
 
@@ -130,6 +137,12 @@ export const ProdutoForm: React.FC = () => {
       setLoading(false);
       setOpen(false);
     }
+  }
+
+  if(loading){
+    return(
+      <Loading />
+    )
   }
 
   return (
