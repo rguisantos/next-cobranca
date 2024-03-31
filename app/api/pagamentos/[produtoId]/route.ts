@@ -46,7 +46,10 @@ export async function GET(
                     }
                 })
                 if(res.status===200)
-                    return NextResponse.json({...res.data})
+                    return NextResponse.json({estornos: res.data.estornos, total: res.data.total, pagamentos: res.data.pagamentos.map((x:any)=>({
+                        ...x,
+                        jaTemCobranca: pagamentosComCobranca.some((y) => y.id===x.id)
+                    }))})
             }
             catch{
                 await prismadb.configuracao.deleteMany({
@@ -86,6 +89,13 @@ export async function GET(
                 chave: "TOKEN_PAGAMENTO"
             }
         }));
+
+        
+        const pagamentosComCobranca = await prismadb.pagamento.findMany({
+            where: {
+                maquinaId: produto.maquinaId
+            }
+        });
         
         const result = await axios.get(`${apiPagamento?.valor}/pagamentos/${produto.maquinaId}`, {
             headers: {
@@ -93,7 +103,11 @@ export async function GET(
                 "content-type": "application/json"
             }
         })
-        return NextResponse.json({...result.data})
+        
+        return NextResponse.json({estornos: result.data.estornos, total: result.data.total, pagamentos: result.data.pagamentos.map((x:any)=>({
+            ...x,
+            jaTemCobranca: pagamentosComCobranca.some((y) => y.id===x.id)
+        }))})
     } catch (error) {
         console.log('[Pagamento_GET]', error);
         return new NextResponse("Erro Interno do servidor", { status: 500 });

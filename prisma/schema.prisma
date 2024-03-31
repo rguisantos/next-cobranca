@@ -88,22 +88,37 @@ model Locacao {
 }
 
 model Cobranca {
-  id                        String  @id @default(uuid())
-  cobrancaId                String
-  valorSaldoDevedorAnterior Float   @default(0)
-  relogioAtual              Int     @default(0)
-  partidasJogadas           Int     @default(0)
-  descontoPartida           Int     @default(0)
-  valorEmpresa              Float   @default(0)
-  valorDescontoEmpresa      Float   @default(0)
-  valorAcrescimoEmpresa     Float   @default(0)
-  valorParaEmpresaReceber   Float   @default(0)
-  valorRecebidoPelaEmpresa  Float   @default(0)
-  valorParaClienteReceber   Float   @default(0)
-  valorRecebidoPeloCliente  Float   @default(0)
-  valorParaProximaCobranca  Float   @default(0)
-  cobranca                  Locacao @relation("LocacaoComCobranca", fields: [cobrancaId], references: [id])
+  id                        String      @id @default(uuid())
+  locacaoId                 String
+  valorSaldoDevedorAnterior Float       @default(0)
+  relogioAtual              Int         @default(0)
+  partidasJogadas           Int         @default(0)
+  descontoPartida           Int         @default(0)
+  valorEmpresa              Float       @default(0)
+  valorDescontoEmpresa      Float       @default(0)
+  valorAcrescimoEmpresa     Float       @default(0)
+  valorParaEmpresaReceber   Float       @default(0)
+  valorRecebidoPelaEmpresa  Float       @default(0)
+  valorParaClienteReceber   Float       @default(0)
+  valorRecebidoPeloCliente  Float       @default(0)
+  valorParaProximaCobranca  Float       @default(0)
+  locacao                   Locacao     @relation("LocacaoComCobranca", fields: [locacaoId], references: [id])
+  pagamentos                Pagamento[] @relation("CobrancaComPagamento")
 
+  @@index([locacaoId])
+}
+
+model Pagamento {
+  id         String   @id
+  maquinaId String
+  
+  valor Float
+  estornado  Boolean
+  data  DateTime
+
+  cobrancaId String
+  cobranca   Cobranca @relation("CobrancaComPagamento", fields: [cobrancaId], references: [id])
+  
   @@index([cobrancaId])
 }
 
@@ -113,11 +128,12 @@ model Usuario {
   senha         String
   acessosNaRota AcessoNaRota[] @relation("UsuarioComAcessoNaRota")
 }
+
 model Configuracao {
-  id            String         @id @default(uuid())
-  chave          String
-  valor         String
-  
+  id    String @id @default(uuid())
+  chave String
+  valor String
+
   @@index([chave])
 }
 

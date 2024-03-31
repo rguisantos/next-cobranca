@@ -53,6 +53,7 @@ export const ProdutoForm: React.FC = () => {
       pagamentos: {
         id:string,
         valor:number,
+        jaTemCobranca: boolean,
         data:Date,
         estornado:boolean
       }[]

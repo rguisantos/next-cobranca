@@ -16,6 +16,7 @@ export const PagamentosClient: React.FC<{
       id: string,
       valor: number,
       estornado: boolean,
+      jaTemCobranca: boolean,
       data: Date
   }[]
 }> = (
@@ -26,6 +27,7 @@ export const PagamentosClient: React.FC<{
     id: item.id,
     data: (moment(item.data)).format('DD/MM/YYYY HH:mm:ss'),
     estornado: item.estornado ? "Estornado" : "",
+    jaTemCobranca: item.jaTemCobranca ? "Já tem Cobrança" : "",
     valor: item.valor.toString(),
   }));
 
